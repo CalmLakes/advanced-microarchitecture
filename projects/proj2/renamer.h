@@ -1,21 +1,38 @@
 #include <inttypes.h>
+#include <circular_fifo.h>
+
+template <typename T> class circular_fifo {
+		private: 
+			uint32_t FIFO_LENGTH;
+			uint32_t head;
+			uint32_t tail;
+			bool tail_phase;
+			bool head_phase;
+			T item;
+			T list[];
+		public:
+			circular_fifo (uint32_t fifoSize);
+			void push(T item);
+			T pop(T item);
+	}
+
 
 class renamer {
 private:
 	/////////////////////////////////////////////////////////////////////
 	// Put private class variables here.
 	/////////////////////////////////////////////////////////////////////
-
+	
 	/////////////////////////////////////////////////////////////////////
 	// Structure 1: Rename Map Table
 	// Entry contains: physical register mapping
 	/////////////////////////////////////////////////////////////////////
-
+	uint32_t RMT[];
 	/////////////////////////////////////////////////////////////////////
 	// Structure 2: Architectural Map Table
 	// Entry contains: physical register mapping
 	/////////////////////////////////////////////////////////////////////
-
+	uint32_t AMT[];
 	/////////////////////////////////////////////////////////////////////
 	// Structure 3: Free List
 	//
@@ -24,7 +41,7 @@ private:
 	// Notes:
 	// * Structure includes head, tail, and their phase bits.
 	/////////////////////////////////////////////////////////////////////
-
+	circular_fifo<uint32_t> free_list;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 4: Active List
 	//
@@ -63,7 +80,24 @@ private:
 	// Notes:
 	// * Structure includes head, tail, and their phase bits.
 	/////////////////////////////////////////////////////////////////////
+	struct active_list_entry{
+		bool dest_flag;
+		uint32_t logical_reg_num;
+		uint32_t physical_reg_num;
+		bool completed;
+		bool exception;
+		bool load_violation;
+		bool branch_mispred;
+		bool val_mispred;
+		bool load_flag;
+		bool store_flag;
+		bool branch_flag;
+		bool amo_flag;
+		bool csr_flag;
+		uint64_t pc;
+	} active_list_entry;
 
+	circular_fifo<active_list_entry> active_list;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 5: Physical Register File
 	// Entry contains: value
@@ -72,12 +106,12 @@ private:
 	// * The value must be of the following type: uint64_t
 	//   (#include <inttypes.h>, already at top of this file)
 	/////////////////////////////////////////////////////////////////////
-
+	uint32_t PRF[];
 	/////////////////////////////////////////////////////////////////////
 	// Structure 6: Physical Register File Ready Bit Array
 	// Entry contains: ready bit
 	/////////////////////////////////////////////////////////////////////
-
+	bool prf_ready_bit_array[];
 	/////////////////////////////////////////////////////////////////////
 	// Structure 7: Global Branch Mask (GBM)
 	//
@@ -158,7 +192,7 @@ public:
 		uint64_t n_phys_regs,
 		uint64_t n_branches,
 		uint64_t n_active);
-
+		
 	/////////////////////////////////////////////////////////////////////
 	// This is the destructor, used to clean up memory space and
 	// other things when simulation is done.
