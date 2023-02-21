@@ -21,16 +21,33 @@
 // that the pipeline is intially empty (no in-flight instructions yet).
 /////////////////////////////////////////////////////////////////////
 renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,uint64_t n_active){
+    this->n_log_regs=n_log_regs;
+	this->n_phys_regs=n_phys_regs;
+	this->n_branches=n_branches;
+	this->n_active=n_active;
     assert(1 <= n_branches <= 64);
     assert(n_active > 0);
     assert(n_phys_regs > n_log_regs);
-    RMT = new uint32_t[n_log_regs];
-    AMT = new uint32_t[n_log_regs];
-    free_list = new circular_fifo<uint32_t>(n_phys_regs);
-    active_list = new circular_fifo<active_list_entry>(n_active);
+    GBM = 0;
+    RMT = new uint64_t[n_log_regs];
+    // Initialize RMT
+    for (uint64_t idx =  0; idx<n_log_regs;idx++){
+        RMT[idx] = idx;
+    }
+    AMT = new uint64_t[n_log_regs];
+    for (uint64_t idx =  0; idx<n_log_regs;idx++){
+        AMT[idx] = idx;
+    }
+    // Initialize AMT
+    free_list = new circular_fifo<uint64_t>(n_phys_regs-n_log_regs);
+    for (uint64_t i =  n_log_regs; i<n_phys_regs;i++){
+        free_list->push(i);
+    }
+    // Initialzie free list
+    active_list = new circular_fifo<active_list_entry*>(n_active);
+    // init the active list
     PRF = new uint64_t[n_phys_regs];
     branch_checkpoints = new checkpoint_entry[n_branches];
-
 }
     
 /////////////////////////////////////////////////////////////////////
@@ -81,7 +98,7 @@ bool renamer::stall_reg(uint64_t bundle_dst){
 // for all branches in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_branch(uint64_t bundle_branch){
-    if ( __builtin_popcount(GBM) > (64 - bundle_branch)) return true;
+    if ( __builtin_popcount(GBM) > (n_branches - bundle_branch)) return true;
     else return false;
 }
 
@@ -154,10 +171,12 @@ uint64_t renamer::checkpoint(){
     // Back everything up you dummy :))))))
     checkpoint_entry & dummy = branch_checkpoints[index];
     dummy.shadow_map_table = RMT;
+    assert(&dummy.shadow_map_table != &RMT);
     dummy.head = free_list->head;
     dummy.tail_phase = free_list->tail_phase;
     dummy.head_phase = free_list->head_phase;
     dummy.GBM = GBM;
+    return index;
 }
 
 //////////////////////////////////////////
@@ -177,7 +196,8 @@ uint64_t renamer::checkpoint(){
 // space for all instructions in the dispatch bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_dispatch(uint64_t bundle_inst){
-
+    if (active_list->size() + bundle_inst > n_active) return true;
+    else return false;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -218,22 +238,27 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
                         bool amo,
                         bool csr,
                         uint64_t PC){
-
-                        }
+    
+    // Create new entry
+    active_list_entry * entry = new active_list_entry(dest_valid,log_reg,phys_reg,load,store,branch,amo,csr,PC);
+    uint64_t index = active_list->tail;
+    active_list->push(entry);
+    return index;
+}
 
 /////////////////////////////////////////////////////////////////////
 // Test the ready bit of the indicated physical register.
 // Returns 'true' if ready.
 /////////////////////////////////////////////////////////////////////
 bool renamer::is_ready(uint64_t phys_reg){
-
+    return (prf_ready_bit_array[phys_reg]);
 }
 
 /////////////////////////////////////////////////////////////////////
 // Clear the ready bit of the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::clear_ready(uint64_t phys_reg){
-
+    prf_ready_bit_array[phys_reg] = false;
 }
 
 
@@ -242,14 +267,14 @@ void renamer::clear_ready(uint64_t phys_reg){
 // and Execute Stages.                  //
 //////////////////////////////////////////
 uint64_t renamer::read(uint64_t phys_reg){
-
+    return PRF[phys_reg];
 }
 
 /////////////////////////////////////////////////////////////////////
 // Set the ready bit of the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_ready(uint64_t phys_reg){
-
+    prf_ready_bit_array[phys_reg] = true;
 }
 
 
@@ -261,14 +286,15 @@ void renamer::set_ready(uint64_t phys_reg){
 // Write a value into the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::write(uint64_t phys_reg, uint64_t value){
-
+    PRF[phys_reg] = value;
 }
 
 /////////////////////////////////////////////////////////////////////
 // Set the completed bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_complete(uint64_t AL_index){
-
+    active_list_entry* entry = active_list->at(AL_index);
+    entry->completed = true;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -319,11 +345,37 @@ void renamer::set_complete(uint64_t AL_index){
 //   reaches the head of the Active List. We don’t want or need
 //   that because we immediately recover within this function.)
 /////////////////////////////////////////////////////////////////////
-void renamer::resolve(uint64_t AL_index,
-            uint64_t branch_ID,
-            bool correct){
-
+void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
+    uint64_t idx = 0;
+    uint64_t mask = 1;
+    uint64_t branch_bit = (0x1 << branch_ID);
+    
+    if (correct){
+        // Clear branch bit
+        GBM &= ~branch_bit;
+        // clear in all checkpointed GBM
+        while (idx != n_branches){
+            if (GBM & mask){
+                branch_checkpoints[idx].GBM &= ~branch_bit;
             }
+            mask <<= 1;
+            idx++;
+        }   
+    }
+    // Restoration case
+    else {
+        GBM = branch_checkpoints[branch_ID].GBM;
+        RMT = branch_checkpoints[branch_ID].shadow_map_table;
+        free_list->head = branch_checkpoints[branch_ID].head;
+        free_list->head_phase = branch_checkpoints[branch_ID].head_phase;
+        free_list->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
+
+        // Clear the GBM
+        GBM &= ~branch_bit;
+        // Roll back the active list tail
+        active_list->setTail(branch_ID+1);
+    }
+}
 
 //////////////////////////////////////////
 // Functions related to Retire Stage.   //
@@ -362,8 +414,30 @@ bool renamer::precommit(bool &completed,
                     bool &exception, bool &load_viol, bool &br_misp, bool &val_misp,
                 bool &load, bool &store, bool &branch, bool &amo, bool &csr,
             uint64_t &PC){
+    if (active_list->size() != 0){
+        active_list_entry * entry = active_list->at(0);
 
-            }
+        completed = entry->completed;
+        exception = entry->exception;
+        load_viol = entry->load_violation;
+
+        br_misp = entry->branch_mispred;
+        val_misp = entry->val_mispred;
+        load = entry->load_flag;
+
+        store = entry->store_flag;
+        branch = entry->branch_flag;
+        amo = entry->amo_flag;
+        csr = entry->csr_flag;
+        PC = entry->pc;
+        return true;
+    }
+    else {
+        return false;
+    }
+
+    
+}
 
 /////////////////////////////////////////////////////////////////////
 // This function commits the instruction at the head of the Active List.
@@ -383,7 +457,12 @@ bool renamer::precommit(bool &completed,
 // head instruction and otherwise cause the simulator to exit.
 /////////////////////////////////////////////////////////////////////
 void renamer::commit(){
-
+    assert(!active_list->empty());
+    active_list_entry * head = active_list->at(0);
+    assert(head->completed);
+    assert(!head->exception);
+    assert(!head->load_violation);
+    head = active_list->pop();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -397,7 +476,15 @@ void renamer::commit(){
 // should be consistent with an empty pipeline.
 /////////////////////////////////////////////////////////////////////
 void renamer::squash(){
-
+    // roll back tail pointer to empty AL
+    active_list->flush();
+    // roll back head pointer of FL to tail (full)
+    free_list->tail = free_list->head;
+    // clear GBM
+    GBM = 0;
+    // copy AMT to RMT
+    RMT = AMT;
+    // 
 }
 
 //////////////////////////////////////////
@@ -410,15 +497,22 @@ void renamer::squash(){
 // value misprediction bit, of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_exception(uint64_t AL_index){
-
+    active_list_entry * entry = active_list->at(AL_index);
+    entry->exception = true;
 }
 void renamer::set_load_violation(uint64_t AL_index){
+    active_list_entry * entry = active_list->at(AL_index);
+    entry->load_violation = true;
 
 }
 void renamer::set_branch_misprediction(uint64_t AL_index){
+    active_list_entry * entry = active_list->at(AL_index);
+    entry->branch_mispred = true;
 
 }
 void renamer::set_value_misprediction(uint64_t AL_index){
+    active_list_entry * entry = active_list->at(AL_index);
+    entry->val_mispred = true;
 
 }
 
@@ -426,5 +520,6 @@ void renamer::set_value_misprediction(uint64_t AL_index){
 // Query the exception bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 bool renamer::get_exception(uint64_t AL_index){
-
+    active_list_entry * entry = active_list->at(AL_index);
+    return entry->exception;
 }

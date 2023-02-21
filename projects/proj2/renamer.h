@@ -5,8 +5,8 @@
 
 struct active_list_entry{
 		bool dest_flag;
-		uint32_t logical_reg_num;
-		uint32_t physical_reg_num;
+		uint64_t logical_reg_num;
+		uint64_t physical_reg_num;
 		bool completed;
 		bool exception;
 		bool load_violation;
@@ -18,12 +18,33 @@ struct active_list_entry{
 		bool amo_flag;
 		bool csr_flag;
 		uint64_t pc;
+
+		active_list_entry(bool dest_valid,
+                        uint64_t log_reg,
+                        uint64_t phys_reg,
+                        bool load,
+                        bool store,
+                        bool branch,
+                        bool amo,
+                        bool csr,
+                        uint64_t PC){
+
+		this->dest_flag = dest_valid;
+		this->logical_reg_num = log_reg;
+		this->physical_reg_num = phys_reg;
+		this->load_flag = load;
+		this->store_flag = store;
+		this->branch_flag = branch;
+		this->amo_flag = amo;
+		this->csr_flag = csr;
+		this->pc = PC;
+		}
 	};
 	
 struct checkpoint_entry{
-		uint32_t * shadow_map_table;
+		uint64_t * shadow_map_table;
 		// Free list components
-		uint32_t head;
+		uint64_t head;
 		bool head_phase;
 		bool tail_phase;
 		uint64_t GBM;
@@ -34,17 +55,20 @@ private:
 	/////////////////////////////////////////////////////////////////////
 	// Put private class variables here.
 	/////////////////////////////////////////////////////////////////////
-	
+	uint64_t n_log_regs;
+	uint64_t n_phys_regs;
+	uint64_t n_branches;
+	uint64_t n_active;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 1: Rename Map Table
 	// Entry contains: physical register mapping
 	/////////////////////////////////////////////////////////////////////
-	uint32_t * RMT;
+	uint64_t * RMT;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 2: Architectural Map Table
 	// Entry contains: physical register mapping
 	/////////////////////////////////////////////////////////////////////
-	uint32_t * AMT;
+	uint64_t * AMT;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 3: Free List
 	//
@@ -53,7 +77,7 @@ private:
 	// Notes:
 	// * Structure includes head, tail, and their phase bits.
 	/////////////////////////////////////////////////////////////////////
-	circular_fifo<uint32_t>* free_list;
+	circular_fifo<uint64_t>* free_list;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 4: Active List
 	//
@@ -94,7 +118,7 @@ private:
 	/////////////////////////////////////////////////////////////////////
 	
 
-	circular_fifo<active_list_entry>* active_list;
+	circular_fifo<active_list_entry*>* active_list;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 5: Physical Register File
 	// Entry contains: value
