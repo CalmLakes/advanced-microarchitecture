@@ -1,32 +1,6 @@
 #include <assert.h>
 #include <renamer.h>
 
-circular_fifo::circular_fifo (uint32_t fifoSize){
-    FIFO_LENGTH = fifoSize;
-    list = new T[fifoSize];
-    head = tail = 0;
-    tail_phase = head_phase = false;
-}
-
-void circular_fifo::push(T item){
-    list[tail] = reg;
-    tail++;
-    if (tail == FIFO_LENGTH){
-        tail = 0;
-        tail_phase != tail_phase;
-    }
-}
-
-T circular_fifo::pop(T item){
-    item = list[head];
-    head++;
-    if (head == FIFO_LENGTH){
-        head = 0;
-        head_phase != head_phase;
-    }
-    return item;
-}
-
 
 /////////////////////////////////////////////////////////////////////
 // This is the constructor function.
@@ -48,6 +22,14 @@ T circular_fifo::pop(T item){
 /////////////////////////////////////////////////////////////////////
 renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,uint64_t n_active){
     assert(1 <= n_branches <= 64);
+    assert(n_active > 0);
+    assert(n_phys_regs > n_log_regs);
+    RMT = new uint32_t[n_log_regs];
+    AMT = new uint32_t[n_log_regs];
+    free_list = new circular_fifo<uint32_t>(n_phys_regs);
+    active_list = new circular_fifo<active_list_entry>(n_active);
+    PRF = new uint64_t[n_phys_regs];
+
 }
     
 /////////////////////////////////////////////////////////////////////
@@ -56,8 +38,12 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
 // I typically don't use a destructor; you have the option to keep
 // this function empty.
 /////////////////////////////////////////////////////////////////////
-renamer::~renamer();
-
+renamer::~renamer(){
+    delete [] RMT;
+    delete [] AMT;
+    delete free_list;
+    delete active_list;
+}
 
 //////////////////////////////////////////
 // Functions related to Rename Stage.   //
@@ -77,7 +63,10 @@ renamer::~renamer();
 // registers to allocate to all of the logical destination registers
 // in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
-bool renamer::stall_reg(uint64_t bundle_dst);
+bool renamer::stall_reg(uint64_t bundle_dst){
+    if (free_list->size() < bundle_dst) return true;
+    else return false;
+}
 
 /////////////////////////////////////////////////////////////////////
 // The Rename Stage must stall if there aren't enough free
@@ -90,12 +79,17 @@ bool renamer::stall_reg(uint64_t bundle_dst);
 // Return "true" (stall) if there aren't enough free checkpoints
 // for all branches in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
-bool renamer::stall_branch(uint64_t bundle_branch);
+bool renamer::stall_branch(uint64_t bundle_branch){
+    if ( __builtin_popcount(GBM) > (64 - bundle_branch)) return true;
+    else return false;
+}
 
 /////////////////////////////////////////////////////////////////////
 // This function is used to get the branch mask for an instruction.
 /////////////////////////////////////////////////////////////////////
-uint64_t renamer::get_branch_mask();
+uint64_t renamer::get_branch_mask(){
+    return GBM;
+}
 
 /////////////////////////////////////////////////////////////////////
 // This function is used to rename a single source register.
@@ -105,7 +99,9 @@ uint64_t renamer::get_branch_mask();
 //
 // Return value: physical register name
 /////////////////////////////////////////////////////////////////////
-uint64_t renamer::rename_rsrc(uint64_t log_reg);
+uint64_t renamer::rename_rsrc(uint64_t log_reg){
+    return RMT[log_reg];
+}
 
 /////////////////////////////////////////////////////////////////////
 // This function is used to rename a single destination register.
@@ -115,7 +111,9 @@ uint64_t renamer::rename_rsrc(uint64_t log_reg);
 //
 // Return value: physical register name
 /////////////////////////////////////////////////////////////////////
-uint64_t renamer::rename_rdst(uint64_t log_reg);
+uint64_t renamer::rename_rdst(uint64_t log_reg){
+    return RMT[log_reg];
+}
 
 /////////////////////////////////////////////////////////////////////
 // This function creates a new branch checkpoint.
@@ -141,7 +139,9 @@ uint64_t renamer::rename_rdst(uint64_t log_reg);
 // 2. checkpointed Free List head pointer and its phase bit
 // 3. checkpointed GBM
 /////////////////////////////////////////////////////////////////////
-uint64_t renamer::checkpoint();
+uint64_t renamer::checkpoint(){
+
+}
 
 //////////////////////////////////////////
 // Functions related to Dispatch Stage. //
@@ -159,7 +159,9 @@ uint64_t renamer::checkpoint();
 // Return "true" (stall) if the Active List does not have enough
 // space for all instructions in the dispatch bundle.
 /////////////////////////////////////////////////////////////////////
-bool renamer::stall_dispatch(uint64_t bundle_inst);
+bool renamer::stall_dispatch(uint64_t bundle_inst){
+
+}
 
 /////////////////////////////////////////////////////////////////////
 // This function dispatches a single instruction into the Active
@@ -198,31 +200,40 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
                         bool branch,
                         bool amo,
                         bool csr,
-                        uint64_t PC);
+                        uint64_t PC){
+
+                        }
 
 /////////////////////////////////////////////////////////////////////
 // Test the ready bit of the indicated physical register.
 // Returns 'true' if ready.
 /////////////////////////////////////////////////////////////////////
-bool renamer::is_ready(uint64_t phys_reg);
+bool renamer::is_ready(uint64_t phys_reg){
+
+}
 
 /////////////////////////////////////////////////////////////////////
 // Clear the ready bit of the indicated physical register.
 /////////////////////////////////////////////////////////////////////
-void renamer::clear_ready(uint64_t phys_reg);
+void renamer::clear_ready(uint64_t phys_reg){
+
+}
 
 
 //////////////////////////////////////////
 // Functions related to the Reg. Read   //
 // and Execute Stages.                  //
 //////////////////////////////////////////
-#include <circular_fifo.h>/////////////////////////////
-uint64_t renamer::read(uint64_t phys_reg);
+uint64_t renamer::read(uint64_t phys_reg){
+
+}
 
 /////////////////////////////////////////////////////////////////////
 // Set the ready bit of the indicated physical register.
 /////////////////////////////////////////////////////////////////////
-void renamer::set_ready(uint64_t phys_reg);
+void renamer::set_ready(uint64_t phys_reg){
+
+}
 
 
 //////////////////////////////////////////
@@ -232,12 +243,16 @@ void renamer::set_ready(uint64_t phys_reg);
 /////////////////////////////////////////////////////////////////////
 // Write a value into the indicated physical register.
 /////////////////////////////////////////////////////////////////////
-void renamer::write(uint64_t phys_reg, uint64_t value);
+void renamer::write(uint64_t phys_reg, uint64_t value){
+
+}
 
 /////////////////////////////////////////////////////////////////////
 // Set the completed bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
-void renamer::set_complete(uint64_t AL_index);
+void renamer::set_complete(uint64_t AL_index){
+
+}
 
 /////////////////////////////////////////////////////////////////////
 // This function is for handling branch resolution.
@@ -289,7 +304,9 @@ void renamer::set_complete(uint64_t AL_index);
 /////////////////////////////////////////////////////////////////////
 void renamer::resolve(uint64_t AL_index,
             uint64_t branch_ID,
-            bool correct);
+            bool correct){
+
+            }
 
 //////////////////////////////////////////
 // Functions related to Retire Stage.   //
@@ -327,7 +344,9 @@ void renamer::resolve(uint64_t AL_index,
 bool renamer::precommit(bool &completed,
                     bool &exception, bool &load_viol, bool &br_misp, bool &val_misp,
                 bool &load, bool &store, bool &branch, bool &amo, bool &csr,
-            uint64_t &PC);
+            uint64_t &PC){
+
+            }
 
 /////////////////////////////////////////////////////////////////////
 // This function commits the instruction at the head of the Active List.
@@ -346,7 +365,9 @@ bool renamer::precommit(bool &completed,
 // This is why you should assert() that it is valid to commit the
 // head instruction and otherwise cause the simulator to exit.
 /////////////////////////////////////////////////////////////////////
-void renamer::commit();
+void renamer::commit(){
+
+}
 
 //////////////////////////////////////////////////////////////////////
 // Squash the renamer class.
@@ -358,7 +379,9 @@ void renamer::commit();
 // to the committed state of the machine and all renamer state
 // should be consistent with an empty pipeline.
 /////////////////////////////////////////////////////////////////////
-void renamer::squash();
+void renamer::squash(){
+
+}
 
 //////////////////////////////////////////
 // Functions not tied to specific stage.//
@@ -369,12 +392,22 @@ void renamer::squash();
 // load violation bit, branch misprediction bit, and
 // value misprediction bit, of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
-void renamer::set_exception(uint64_t AL_index);
-void renamer::set_load_violation(uint64_t AL_index);
-void renamer::set_branch_misprediction(uint64_t AL_index);
-void renamer::set_value_misprediction(uint64_t AL_index);
+void renamer::set_exception(uint64_t AL_index){
+
+}
+void renamer::set_load_violation(uint64_t AL_index){
+
+}
+void renamer::set_branch_misprediction(uint64_t AL_index){
+
+}
+void renamer::set_value_misprediction(uint64_t AL_index){
+
+}
 
 /////////////////////////////////////////////////////////////////////
 // Query the exception bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
-bool renamer::get_exception(uint64_t AL_index);
+bool renamer::get_exception(uint64_t AL_index){
+
+}

@@ -1,28 +1,37 @@
-
 #include <circular_fifo.h>
 
-circular_fifo::circular_fifo (uint32_t fifoSize){
+template <class T> circular_fifo<T>::circular_fifo (uint64_t fifoSize){
     FIFO_LENGTH = fifoSize;
     list = new T[fifoSize];
     head = tail = 0;
     tail_phase = head_phase = false;
-}
+};
 
-void circular_fifo::push(T item){
-    list[tail] = reg;
+template <class T> void circular_fifo<T>::push(T item){
+    list[tail] = item;
     tail++;
+    fifo_size++;
     if (tail == FIFO_LENGTH){
         tail = 0;
         tail_phase != tail_phase;
     }
-}
+};
 
-T circular_fifo::pop(T item){
+template <class T> T circular_fifo<T>::pop(){
     item = list[head];
     head++;
+    fifo_size--;
     if (head == FIFO_LENGTH){
         head = 0;
         head_phase != head_phase;
     }
     return item;
-}
+};
+
+template <class T> circular_fifo<T>::~circular_fifo(){
+    delete [] list;
+};
+
+template <class T> uint64_t circular_fifo<T>::size(){
+    return fifo_size;
+};
