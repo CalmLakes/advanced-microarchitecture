@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <renamer.h>
-
+#include <bits/stdc++.h>
 
 /////////////////////////////////////////////////////////////////////
 // This is the constructor function.
@@ -29,6 +29,7 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
     free_list = new circular_fifo<uint32_t>(n_phys_regs);
     active_list = new circular_fifo<active_list_entry>(n_active);
     PRF = new uint64_t[n_phys_regs];
+    branch_checkpoints = new checkpoint_entry[n_branches];
 
 }
     
@@ -114,7 +115,6 @@ uint64_t renamer::rename_rsrc(uint64_t log_reg){
 uint64_t renamer::rename_rdst(uint64_t log_reg){
     RMT[log_reg] = free_list->pop();
     return RMT[log_reg];
-
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -142,7 +142,22 @@ uint64_t renamer::rename_rdst(uint64_t log_reg){
 // 3. checkpointed GBM
 /////////////////////////////////////////////////////////////////////
 uint64_t renamer::checkpoint(){
-
+    assert(GBM != 0xffffffffffffffff);
+    // Find the open bit
+    uint64_t mask = 0x1;
+    uint64_t index = 0;  
+    while (GBM & mask){
+        index++;
+        mask = mask << 1;
+    }
+    GBM |= mask;
+    // Back everything up you dummy :))))))
+    checkpoint_entry & dummy = branch_checkpoints[index];
+    dummy.shadow_map_table = RMT;
+    dummy.head = free_list->head;
+    dummy.tail_phase = free_list->tail_phase;
+    dummy.head_phase = free_list->head_phase;
+    dummy.GBM = GBM;
 }
 
 //////////////////////////////////////////

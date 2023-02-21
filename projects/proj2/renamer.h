@@ -20,6 +20,15 @@ struct active_list_entry{
 		uint64_t pc;
 	};
 	
+struct checkpoint_entry{
+		uint32_t * shadow_map_table;
+		// Free list components
+		uint32_t head;
+		bool head_phase;
+		bool tail_phase;
+		uint64_t GBM;
+	};
+
 class renamer {
 private:
 	/////////////////////////////////////////////////////////////////////
@@ -147,7 +156,8 @@ private:
 	// 2. checkpointed Free List head pointer and its phase bit
 	// 3. checkpointed GBM
 	/////////////////////////////////////////////////////////////////////
-
+	
+	checkpoint_entry * branch_checkpoints; 
 	/////////////////////////////////////////////////////////////////////
 	// Private functions.
 	// e.g., a generic function to copy state from one map to another.
