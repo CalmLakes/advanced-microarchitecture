@@ -112,7 +112,9 @@ uint64_t renamer::rename_rsrc(uint64_t log_reg){
 // Return value: physical register name
 /////////////////////////////////////////////////////////////////////
 uint64_t renamer::rename_rdst(uint64_t log_reg){
+    RMT[log_reg] = free_list->pop();
     return RMT[log_reg];
+
 }
 
 /////////////////////////////////////////////////////////////////////
