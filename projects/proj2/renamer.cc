@@ -467,6 +467,7 @@ void renamer::commit(){
     assert(!head->exception);
     assert(!head->load_violation);
     head = AL->pop();
+    printf("Finished commit\n");
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -483,12 +484,12 @@ void renamer::squash(){
     // roll back tail pointer to empty AL
     AL->flush();
     // roll back head pointer of FL to tail (full)
-    FL->tail = FL->head;
+    FL->head = 0;
     // clear GBM
     GBM = 0;
     // copy AMT to RMT
     RMT = AMT;
-    // 
+    printf("Finished commit\n");
 }
 
 //////////////////////////////////////////
