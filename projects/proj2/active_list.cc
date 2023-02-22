@@ -37,7 +37,7 @@ uint64_t active_list::size(){
     }
     else if (tail == head){
         if (tail_phase == head_phase) return 0;
-        else (tail_phase == head_phase) return FIFO_LENGTH;
+        else return FIFO_LENGTH;
     }
     else return (tail - head);
 }
