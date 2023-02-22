@@ -89,7 +89,7 @@ renamer::~renamer(){
 // in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_reg(uint64_t bundle_dst){
-    if (FL->size() < bundle_dst) return true;
+    if (FL->size() + bundle_dst > (n_phys_regs-n_log_regs)) return true;
     else return false;
 }
 
@@ -105,7 +105,7 @@ bool renamer::stall_reg(uint64_t bundle_dst){
 // for all branches in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_branch(uint64_t bundle_branch){
-    if ( __builtin_popcount(GBM) > (n_branches - bundle_branch)) return true;
+    if ( (__builtin_popcount(GBM) + bundle_branch ) > n_branches ) return true;
     else return false;
 }
 
