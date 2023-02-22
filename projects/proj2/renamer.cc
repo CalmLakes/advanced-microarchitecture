@@ -48,6 +48,10 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
     // init the active list
     PRF = new uint64_t[n_phys_regs];
     branch_checkpoints = new checkpoint_entry[n_branches];
+    prf_ready_bit_array = new bool[n_phys_regs];
+    for (bool & item : prf_ready_bit_array){
+        item = false;
+    }
 }
     
 /////////////////////////////////////////////////////////////////////
