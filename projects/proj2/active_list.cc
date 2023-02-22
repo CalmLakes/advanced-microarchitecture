@@ -17,7 +17,7 @@ void active_list_def::push(active_list_entry * item){
         tail_phase != tail_phase;
     }
 }
-
+// Test bro
 active_list_entry * active_list_def::pop(){
     item = list[head];
     head++;
