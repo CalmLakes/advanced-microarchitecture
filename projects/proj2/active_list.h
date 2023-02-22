@@ -42,14 +42,14 @@ struct active_list_entry{
 class active_list_def {
 		private: 
 			uint64_t FIFO_LENGTH;
-			active_list_entry item;
+			active_list_entry * item;
             uint64_t fifo_size;
 		public:
             uint64_t tail;
             uint64_t head;
             bool tail_phase;
 			bool head_phase;
-            active_list_entry * list;
+            active_list_entry ** list;
 			active_list_def(uint64_t fifoSize);
 			void push(active_list_entry* item);
 			active_list_entry * pop();
