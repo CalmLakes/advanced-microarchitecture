@@ -63,3 +63,7 @@ void active_list::flush(){
     tail_phase = head_phase = false;
 }
 
+bool active_list::full(){
+    return (size() == FIFO_LENGTH);
+}
+

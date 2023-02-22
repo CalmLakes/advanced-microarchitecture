@@ -59,4 +59,5 @@ class active_list {
             void setTail(uint64_t value);
             bool empty();
             void flush();
+			bool full();
 	};

@@ -21,13 +21,16 @@
 // that the pipeline is intially empty (no in-flight instructions yet).
 /////////////////////////////////////////////////////////////////////
 renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,uint64_t n_active){
+    // Save the number of branches
     this->n_log_regs=n_log_regs;
 	this->n_phys_regs=n_phys_regs;
 	this->n_branches=n_branches;
 	this->n_active=n_active;
+    // Check assertions
     assert(1 <= n_branches <= 64);
     assert(n_active > 0);
     assert(n_phys_regs > n_log_regs);
+    //  Initialzie the GB
     GBM = 0;
     RMT = new uint64_t[n_log_regs];
     // Initialize RMT
@@ -245,6 +248,7 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
     
     // Create new entry
     active_list_entry * entry = new active_list_entry(dest_valid,log_reg,phys_reg,load,store,branch,amo,csr,PC);
+    asser(!AL->full());
     uint64_t index = AL->tail;
     AL->push(entry);
     return index;
