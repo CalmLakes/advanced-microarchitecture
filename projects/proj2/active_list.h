@@ -37,6 +37,11 @@ struct active_list_entry{
 		this->amo_flag = amo;
 		this->csr_flag = csr;
 		this->pc = PC;
+		completed = false;
+		exception = false;
+		branch_mispred = false;
+		val_mispred =false;
+		load_violation =false;
 		}
 		active_list_entry(){}
 };
