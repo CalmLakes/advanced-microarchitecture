@@ -166,7 +166,7 @@ uint64_t renamer::rename_rdst(uint64_t log_reg){
 // 3. checkpointed GBM
 /////////////////////////////////////////////////////////////////////
 uint64_t renamer::checkpoint(){
-    printf("Starting checkpoint\n");
+    //printf("Starting checkpoint\n");
     assert(GBM != 0xffffffffffffffff);
     // Find the open bit
     uint64_t mask = 0x1;
@@ -184,7 +184,7 @@ uint64_t renamer::checkpoint(){
     dummy.tail_phase = FL->tail_phase;
     dummy.head_phase = FL->head_phase;
     dummy.GBM = GBM;
-    printf("Starting checkpoint\n");
+   //printf("Starting checkpoint\n");
     return index;
 }
 
