@@ -89,7 +89,7 @@ renamer::~renamer(){
 // in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_reg(uint64_t bundle_dst){
-    printf("FL SIZE: %d | bundle: %d", FL->size(),bundle_dst);
+    printf("FL SIZE: %d | bundle: %d\n", FL->size(),bundle_dst);
     if ( bundle_dst > (n_phys_regs-n_log_regs) - FL->size()) return true;
     else return false;
 }
