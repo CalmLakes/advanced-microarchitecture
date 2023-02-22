@@ -39,12 +39,12 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
         AMT[idx] = idx;
     }
     // Initialize AMT
-    free_list = new free_list_def(n_phys_regs-n_log_regs);
+    FL = new free_list(n_phys_regs-n_log_regs);
     for (uint64_t i =  n_log_regs; i<n_phys_regs;i++){
-        free_list->push(i);
+        FL->push(i);
     }
     // Initialzie free list
-    active_list = new active_list_def(n_active);
+    AL = new active_list(n_active);
     // init the active list
     PRF = new uint64_t[n_phys_regs];
     branch_checkpoints = new checkpoint_entry[n_branches];
@@ -59,8 +59,8 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
 renamer::~renamer(){
     delete [] RMT;
     delete [] AMT;
-    delete free_list;
-    delete active_list;
+    delete FL;
+    delete AL;
 }
 
 //////////////////////////////////////////
@@ -82,7 +82,7 @@ renamer::~renamer(){
 // in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_reg(uint64_t bundle_dst){
-    if (free_list->size() < bundle_dst) return true;
+    if (FL->size() < bundle_dst) return true;
     else return false;
 }
 
@@ -130,7 +130,7 @@ uint64_t renamer::rename_rsrc(uint64_t log_reg){
 // Return value: physical register name
 /////////////////////////////////////////////////////////////////////
 uint64_t renamer::rename_rdst(uint64_t log_reg){
-    RMT[log_reg] = free_list->pop();
+    RMT[log_reg] = FL->pop();
     return RMT[log_reg];
 }
 
@@ -172,9 +172,9 @@ uint64_t renamer::checkpoint(){
     checkpoint_entry & dummy = branch_checkpoints[index];
     dummy.shadow_map_table = RMT;
     assert(&dummy.shadow_map_table != &RMT);
-    dummy.head = free_list->head;
-    dummy.tail_phase = free_list->tail_phase;
-    dummy.head_phase = free_list->head_phase;
+    dummy.head = FL->head;
+    dummy.tail_phase = FL->tail_phase;
+    dummy.head_phase = FL->head_phase;
     dummy.GBM = GBM;
     return index;
 }
@@ -196,7 +196,7 @@ uint64_t renamer::checkpoint(){
 // space for all instructions in the dispatch bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_dispatch(uint64_t bundle_inst){
-    if (active_list->size() + bundle_inst > n_active) return true;
+    if (AL->size() + bundle_inst > n_active) return true;
     else return false;
 }
 
@@ -241,8 +241,8 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
     
     // Create new entry
     active_list_entry * entry = new active_list_entry(dest_valid,log_reg,phys_reg,load,store,branch,amo,csr,PC);
-    uint64_t index = active_list->tail;
-    active_list->push(entry);
+    uint64_t index = AL->tail;
+    AL->push(entry);
     return index;
 }
 
@@ -293,7 +293,7 @@ void renamer::write(uint64_t phys_reg, uint64_t value){
 // Set the completed bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_complete(uint64_t AL_index){
-    active_list_entry* entry = active_list->at(AL_index);
+    active_list_entry* entry = AL->at(AL_index);
     entry->completed = true;
 }
 
@@ -366,14 +366,14 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     else {
         GBM = branch_checkpoints[branch_ID].GBM;
         RMT = branch_checkpoints[branch_ID].shadow_map_table;
-        free_list->head = branch_checkpoints[branch_ID].head;
-        free_list->head_phase = branch_checkpoints[branch_ID].head_phase;
-        free_list->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
+        FL->head = branch_checkpoints[branch_ID].head;
+        FL->head_phase = branch_checkpoints[branch_ID].head_phase;
+        FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
 
         // Clear the GBM
         GBM &= ~branch_bit;
         // Roll back the active list tail
-        active_list->setTail(branch_ID+1);
+        AL->setTail(branch_ID+1);
     }
 }
 
@@ -414,8 +414,8 @@ bool renamer::precommit(bool &completed,
                     bool &exception, bool &load_viol, bool &br_misp, bool &val_misp,
                 bool &load, bool &store, bool &branch, bool &amo, bool &csr,
             uint64_t &PC){
-    if (active_list->size() != 0){
-        active_list_entry * entry = active_list->at(0);
+    if (AL->size() != 0){
+        active_list_entry * entry = AL->at(0);
 
         completed = entry->completed;
         exception = entry->exception;
@@ -457,12 +457,12 @@ bool renamer::precommit(bool &completed,
 // head instruction and otherwise cause the simulator to exit.
 /////////////////////////////////////////////////////////////////////
 void renamer::commit(){
-    assert(!active_list->empty());
-    active_list_entry * head = active_list->at(0);
+    assert(!AL->empty());
+    active_list_entry * head = AL->at(0);
     assert(head->completed);
     assert(!head->exception);
     assert(!head->load_violation);
-    head = active_list->pop();
+    head = AL->pop();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -477,9 +477,9 @@ void renamer::commit(){
 /////////////////////////////////////////////////////////////////////
 void renamer::squash(){
     // roll back tail pointer to empty AL
-    active_list->flush();
+    AL->flush();
     // roll back head pointer of FL to tail (full)
-    free_list->tail = free_list->head;
+    FL->tail = FL->head;
     // clear GBM
     GBM = 0;
     // copy AMT to RMT
@@ -497,21 +497,21 @@ void renamer::squash(){
 // value misprediction bit, of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_exception(uint64_t AL_index){
-    active_list_entry * entry = active_list->at(AL_index);
+    active_list_entry * entry = AL->at(AL_index);
     entry->exception = true;
 }
 void renamer::set_load_violation(uint64_t AL_index){
-    active_list_entry * entry = active_list->at(AL_index);
+    active_list_entry * entry = AL->at(AL_index);
     entry->load_violation = true;
 
 }
 void renamer::set_branch_misprediction(uint64_t AL_index){
-    active_list_entry * entry = active_list->at(AL_index);
+    active_list_entry * entry = AL->at(AL_index);
     entry->branch_mispred = true;
 
 }
 void renamer::set_value_misprediction(uint64_t AL_index){
-    active_list_entry * entry = active_list->at(AL_index);
+    active_list_entry * entry = AL->at(AL_index);
     entry->val_mispred = true;
 
 }
@@ -520,6 +520,6 @@ void renamer::set_value_misprediction(uint64_t AL_index){
 // Query the exception bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 bool renamer::get_exception(uint64_t AL_index){
-    active_list_entry * entry = active_list->at(AL_index);
+    active_list_entry * entry = AL->at(AL_index);
     return entry->exception;
 }

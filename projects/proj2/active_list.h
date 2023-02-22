@@ -39,7 +39,7 @@ struct active_list_entry{
         active_list_entry(){}
 	};
 
-class active_list_def {
+class active_list {
 		private: 
 			uint64_t FIFO_LENGTH;
 			active_list_entry * item;
@@ -50,10 +50,10 @@ class active_list_def {
             bool tail_phase;
 			bool head_phase;
             active_list_entry ** list;
-			active_list_def(uint64_t fifoSize);
+			active_list(uint64_t fifoSize);
 			void push(active_list_entry* item);
 			active_list_entry * pop();
-			~active_list_def();
+			~active_list();
             uint64_t size();
             active_list_entry * at(uint64_t index);
             void setTail(uint64_t value);
