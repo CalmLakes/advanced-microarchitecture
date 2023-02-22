@@ -430,7 +430,7 @@ bool renamer::precommit(bool &completed,
     printf("Starting precommit\n");
     if (!AL->empty()){
         active_list_entry * entry = AL->at(0);
-        printf("Completed %d\n",entry->completed);
+        printf("Completed %x\n",entry->completed);
         completed = entry->completed;
         exception = entry->exception;
         load_viol = entry->load_violation;
