@@ -2,7 +2,7 @@
 
 active_list_def::active_list_def(uint64_t fifoSize){
     FIFO_LENGTH = fifoSize;
-    list = new *active_list_entry[fifoSize];
+    list = new active_list_entry*[fifoSize];
     fifo_size = 0;
     head = tail = 0;
     tail_phase = head_phase = false;
