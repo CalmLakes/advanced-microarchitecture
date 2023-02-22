@@ -48,3 +48,8 @@ bool free_list::empty(){
     return (fifo_size == 0);
 };
 
+void free_list::flush(){
+    head = tail;
+    head_phase = tail_phase;
+}
+

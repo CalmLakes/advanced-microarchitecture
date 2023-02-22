@@ -500,7 +500,7 @@ void renamer::squash(){
     // roll back tail pointer to empty AL
     AL->flush();
     // roll back head pointer of FL to tail (full)
-    FL->head = 0;
+    FL->flush();
     // clear GBM
     GBM = 0;
     // copy AMT to RMT
