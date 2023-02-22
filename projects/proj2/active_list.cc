@@ -45,7 +45,8 @@ uint64_t active_list::size(){
 
 // Returns item at a given index. Correctly indexes the circular fifo
 active_list_entry * active_list::at(uint64_t index){
-    printf("Active list size: %d",FIFO_LENGTH);
+    printf("Active list size: %d\n",FIFO_LENGTH);
+    printf("Head: %d | Tail: %d\n",head,tail);
     if (head + index >= FIFO_LENGTH) return list[head + index - FIFO_LENGTH];
     else return list[head + index];
 }
