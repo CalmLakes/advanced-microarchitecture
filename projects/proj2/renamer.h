@@ -1,46 +1,8 @@
 #include <inttypes.h>
 #include <circular_fifo.h>
+#include <free_list.h>
+#include <active_list.h>
 
-
-
-struct active_list_entry{
-		bool dest_flag;
-		uint64_t logical_reg_num;
-		uint64_t physical_reg_num;
-		bool completed;
-		bool exception;
-		bool load_violation;
-		bool branch_mispred;
-		bool val_mispred;
-		bool load_flag;
-		bool store_flag;
-		bool branch_flag;
-		bool amo_flag;
-		bool csr_flag;
-		uint64_t pc;
-
-		active_list_entry(bool dest_valid,
-                        uint64_t log_reg,
-                        uint64_t phys_reg,
-                        bool load,
-                        bool store,
-                        bool branch,
-                        bool amo,
-                        bool csr,
-                        uint64_t PC){
-
-		this->dest_flag = dest_valid;
-		this->logical_reg_num = log_reg;
-		this->physical_reg_num = phys_reg;
-		this->load_flag = load;
-		this->store_flag = store;
-		this->branch_flag = branch;
-		this->amo_flag = amo;
-		this->csr_flag = csr;
-		this->pc = PC;
-		}
-	};
-	
 struct checkpoint_entry{
 		uint64_t * shadow_map_table;
 		// Free list components
@@ -77,7 +39,7 @@ private:
 	// Notes:
 	// * Structure includes head, tail, and their phase bits.
 	/////////////////////////////////////////////////////////////////////
-	circular_fifo<uint64_t>* free_list;
+	free_list_def * free_list;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 4: Active List
 	//
@@ -118,7 +80,7 @@ private:
 	/////////////////////////////////////////////////////////////////////
 	
 
-	circular_fifo<active_list_entry*>* active_list;
+	active_list_def* active_list;
 	/////////////////////////////////////////////////////////////////////
 	// Structure 5: Physical Register File
 	// Entry contains: value
