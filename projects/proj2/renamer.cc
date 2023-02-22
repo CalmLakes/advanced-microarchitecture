@@ -255,6 +255,7 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
     uint64_t index = AL->tail;
     AL->push(entry);
     printf("Finishing dispatch\n");
+    printf("Index: %d", index);
     return index;
 }
 
