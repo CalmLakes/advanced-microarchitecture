@@ -435,8 +435,8 @@ bool renamer::precommit(bool &completed,
         amo = entry->amo_flag;
         csr = entry->csr_flag;
         PC = entry->pc;
-        return true;
         printf("test2\n");
+        return true;
     }
     else {
         return false;
