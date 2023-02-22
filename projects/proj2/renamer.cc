@@ -436,12 +436,11 @@ bool renamer::precommit(bool &completed,
         csr = entry->csr_flag;
         PC = entry->pc;
         return true;
+        printf("test2\n");
     }
     else {
         return false;
-    }
-     printf("test2\n");
-    
+    }    
 }
 
 /////////////////////////////////////////////////////////////////////
