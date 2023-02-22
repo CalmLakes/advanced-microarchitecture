@@ -8,7 +8,7 @@ active_list_def::active_list_def(uint64_t fifoSize){
     tail_phase = head_phase = false;
 }
 
-void active_list_def::push(active_list_entry item){
+void active_list_def::push(active_list_entry * item){
     list[tail] = item;
     tail++;
     fifo_size++;
@@ -18,7 +18,7 @@ void active_list_def::push(active_list_entry item){
     }
 }
 
-active_list_entry active_list_def::pop(){
+active_list_entry * active_list_def::pop(){
     item = list[head];
     head++;
     fifo_size--;
@@ -38,7 +38,7 @@ uint64_t active_list_def::size(){
 }
 
 // Returns item at a given index. Correctly indexes the circular fifo
-active_list_entry active_list_def::at(uint64_t index){
+active_list_entry * active_list_def::at(uint64_t index){
     if (head + index > FIFO_LENGTH) return list[head + index - FIFO_LENGTH];
     else return list[head + index];
 }

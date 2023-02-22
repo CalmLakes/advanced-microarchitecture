@@ -51,11 +51,11 @@ class active_list_def {
 			bool head_phase;
             active_list_entry * list;
 			active_list_def(uint64_t fifoSize);
-			void push(active_list_entry item);
-			active_list_entry pop();
+			void push(active_list_entry* item);
+			active_list_entry * pop();
 			~active_list_def();
             uint64_t size();
-            active_list_entry at(uint64_t index);
+            active_list_entry * at(uint64_t index);
             void setTail(uint64_t value);
             bool empty();
             void flush();
