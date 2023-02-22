@@ -35,6 +35,10 @@ uint64_t active_list::size(){
     if (tail < head){
         return (FIFO_LENGTH - head + tail);
     }
+    else if (tail == head){
+        if (tail_phase == head_phase) return 0;
+        else return (tail_phase == head_phase) return FIFO_LENGTH;
+    }
     else return (tail - head);
 }
 
@@ -55,7 +59,7 @@ void active_list::setTail(uint64_t value){
 }
 
 bool active_list::empty(){
-    return (head == tail) & (tail_phase == head_phase);
+    return (head == tail) && (tail_phase == head_phase);
 }
 
 void active_list::flush(){
@@ -64,6 +68,6 @@ void active_list::flush(){
 }
 
 bool active_list::full(){
-    return (size() == FIFO_LENGTH);
+    return (head == tail) && (tail_phase != head_phase);
 }
 
