@@ -38,6 +38,7 @@ struct active_list_entry{
 		this->csr_flag = csr;
 		this->pc = PC;
 		}
+		active_list_entry(){}
 };
 
 class active_list {
