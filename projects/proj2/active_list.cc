@@ -13,7 +13,7 @@ void active_list::push(active_list_entry * item){
     tail++;
     if (tail == FIFO_LENGTH){
         tail = 0;
-        tail_phase != tail_phase;
+        tail_phase = !tail_phase;
     }
 }
 // Test bro
@@ -22,7 +22,7 @@ active_list_entry * active_list::pop(){
     head++;
     if (head == FIFO_LENGTH){
         head = 0;
-        head_phase != head_phase;
+        head_phase = !head_phase;
     }
     return item;
 }
@@ -37,7 +37,7 @@ uint64_t active_list::size(){
     }
     else if (tail == head){
         if (tail_phase == head_phase) return 0;
-        else return (tail_phase == head_phase) return FIFO_LENGTH;
+        else (tail_phase == head_phase) return FIFO_LENGTH;
     }
     else return (tail - head);
 }
