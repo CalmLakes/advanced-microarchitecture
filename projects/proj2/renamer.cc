@@ -248,14 +248,14 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
                         bool csr,
                         uint64_t PC){
     
-    printf("Starting dispatch\n");
+    //printf("Starting dispatch\n");
     // Create new entry
     active_list_entry * entry = new active_list_entry(dest_valid,log_reg,phys_reg,load,store,branch,amo,csr,PC);
     assert(!AL->full());
     uint64_t index = AL->tail - AL->head;
     AL->push(entry);
-    printf("Finishing dispatch\n");
-    printf("Index: %d", index);
+    //printf("Finishing dispatch\n");
+    //printf("Index: %d", index);
     return index;
 }
 
@@ -306,7 +306,7 @@ void renamer::write(uint64_t phys_reg, uint64_t value){
 // Set the completed bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_complete(uint64_t AL_index){
-    printf("AL Index: %d %d\n",AL_index,n_active);
+    //printf("AL Index: %d %d\n",AL_index,n_active);
     active_list_entry* entry = AL->at(AL_index);
     entry->completed = true;
 }
@@ -363,7 +363,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     uint64_t idx = 0;
     uint64_t mask = 1;
     uint64_t branch_bit = (0x1 << branch_ID);
-    printf("Starting resolve\n");
+    //printf("Starting resolve\n");
     if (correct){
         // Clear branch bit
         GBM &= ~branch_bit;
@@ -389,7 +389,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
         // Roll back the active list tail
         AL->setTail(branch_ID+1);
     }
-    printf("Finishing resolve\n");
+    //printf("Finishing resolve\n");
 }
 
 //////////////////////////////////////////
@@ -429,7 +429,7 @@ bool renamer::precommit(bool &completed,
                     bool &exception, bool &load_viol, bool &br_misp, bool &val_misp,
                 bool &load, bool &store, bool &branch, bool &amo, bool &csr,
             uint64_t &PC){
-    printf("Starting precommit\n");
+    //printf("Starting precommit\n");
     if (!AL->empty()){
         active_list_entry * entry = AL->at(0);
         printf("Completed %x\n",entry->load_violation);
@@ -446,11 +446,11 @@ bool renamer::precommit(bool &completed,
         amo = entry->amo_flag;
         csr = entry->csr_flag;
         PC = entry->pc;
-        printf("Finishing precommit\n");
+        //printf("Finishing precommit\n");
         return true;
     }
     else {
-        printf("Finishing precommit\n");
+       // printf("Finishing precommit\n");
         return false;
     }    
 }
@@ -473,7 +473,7 @@ bool renamer::precommit(bool &completed,
 // head instruction and otherwise cause the simulator to exit.
 /////////////////////////////////////////////////////////////////////
 void renamer::commit(){
-    printf("Starting commit\n");
+    //printf("Starting commit\n");
     assert(!AL->empty());
     active_list_entry * head = AL->at(0);
     assert(head->completed);
@@ -482,7 +482,7 @@ void renamer::commit(){
     head = AL->pop();
     if (head->dest_flag) FL->push(head->logical_reg_num);
     AMT[head->logical_reg_num] = head->physical_reg_num;
-    printf("Finished commit\n");
+    //printf("Finished commit\n");
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -496,7 +496,7 @@ void renamer::commit(){
 // should be consistent with an empty pipeline.
 /////////////////////////////////////////////////////////////////////
 void renamer::squash(){
-    printf("Starting commit\n");
+   // printf("Starting commit\n");
     // roll back tail pointer to empty AL
     AL->flush();
     // roll back head pointer of FL to tail (full)
@@ -505,7 +505,7 @@ void renamer::squash(){
     GBM = 0;
     // copy AMT to RMT
     RMT = AMT;
-    printf("Finished commit\n");
+   // printf("Finished commit\n");
 }
 
 //////////////////////////////////////////
