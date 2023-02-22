@@ -40,13 +40,13 @@ uint64_t active_list::size(){
 
 // Returns item at a given index. Correctly indexes the circular fifo
 active_list_entry * active_list::at(uint64_t index){
-    if (head + index > FIFO_LENGTH) return list[head + index - FIFO_LENGTH];
+    if (head + index >= FIFO_LENGTH) return list[head + index - FIFO_LENGTH];
     else return list[head + index];
 }
 
 void active_list::setTail(uint64_t value){
     if (value > FIFO_LENGTH){
-        tail = value = FIFO_LENGTH;
+        tail = value - FIFO_LENGTH;
     }
     else {
         tail = value;
