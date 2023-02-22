@@ -6,7 +6,7 @@ GDB = -g
 INC = -I.
 LIB = -L.
 
-CFLAGS = $(OPT) $(INC) $(LIB) $(GDB)
+CFLAGS = $(OPT) $(INC) $(LIB) $(GDB) -Wall
 
 LIBS = -l721sim -lpthread -lz -ldl 
 
