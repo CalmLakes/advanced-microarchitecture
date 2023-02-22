@@ -305,7 +305,7 @@ void renamer::write(uint64_t phys_reg, uint64_t value){
 // Set the completed bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_complete(uint64_t AL_index){
-    printf("AL Index: %d\n",AL_index);
+    printf("AL Index: %d %d\n",AL_index,n_active);
     active_list_entry* entry = AL->at(AL_index);
     entry->completed = true;
 }
