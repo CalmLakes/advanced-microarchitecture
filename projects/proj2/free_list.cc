@@ -43,22 +43,8 @@ uint64_t free_list::at(uint64_t index){
     else return list[head + index];
 };
 
-void free_list::setTail(uint64_t value){
-    if (value > FIFO_LENGTH){
-        tail = value = FIFO_LENGTH;
-    }
-    else {
-        tail = value;
-    }
-};
 
 bool free_list::empty(){
     return (fifo_size == 0);
-};
-
-void free_list::flush(){
-    fifo_size = 0;
-    head = tail = 0;
-    tail_phase = head_phase = false;
 };
 
