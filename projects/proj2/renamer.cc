@@ -247,6 +247,7 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
                         bool amo,
                         bool csr,
                         uint64_t PC){
+    
     printf("Starting dispatch\n");
     // Create new entry
     active_list_entry * entry = new active_list_entry(dest_valid,log_reg,phys_reg,load,store,branch,amo,csr,PC);

@@ -27,8 +27,10 @@ struct active_list_entry{
                         uint64_t PC){
 
 		this->dest_flag = dest_valid;
-		this->logical_reg_num = log_reg;
-		this->physical_reg_num = phys_reg;
+		if (dest_valid){
+			this->logical_reg_num = log_reg;
+			this->physical_reg_num = phys_reg;
+		}
 		this->load_flag = load;
 		this->store_flag = store;
 		this->branch_flag = branch;
@@ -36,8 +38,7 @@ struct active_list_entry{
 		this->csr_flag = csr;
 		this->pc = PC;
 		}
-        active_list_entry(){}
-	};
+};
 
 class active_list {
 		private: 
