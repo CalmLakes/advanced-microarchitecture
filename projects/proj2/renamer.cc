@@ -252,7 +252,7 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
     // Create new entry
     active_list_entry * entry = new active_list_entry(dest_valid,log_reg,phys_reg,load,store,branch,amo,csr,PC);
     assert(!AL->full());
-    uint64_t index = AL->tail;
+    uint64_t index = AL->tail - AL->head-1;
     AL->push(entry);
     printf("Finishing dispatch\n");
     printf("Index: %d", index);
