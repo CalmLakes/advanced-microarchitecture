@@ -14,7 +14,7 @@ void free_list::push(uint64_t item){
     fifo_size++;
     if (tail == FIFO_LENGTH){
         tail = 0;
-        tail_phase != tail_phase;
+        tail_phase = !tail_phase;
     }
 };
 
@@ -24,7 +24,7 @@ uint64_t free_list::pop(){
     fifo_size--;
     if (head == FIFO_LENGTH){
         head = 0;
-        head_phase != head_phase;
+        head_phase = !head_phase;
     }
     return item;
 };
