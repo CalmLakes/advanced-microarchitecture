@@ -1,6 +1,6 @@
 #include <free_list.h>
 
-free_list_def::free_list_def (uint64_t fifoSize){
+free_list::free_list (uint64_t fifoSize){
     FIFO_LENGTH = fifoSize;
     list = new uint64_t[fifoSize];
     fifo_size = 0;
@@ -8,7 +8,7 @@ free_list_def::free_list_def (uint64_t fifoSize){
     tail_phase = head_phase = false;
 };
 
-void free_list_def::push(uint64_t item){
+void free_list::push(uint64_t item){
     list[tail] = item;
     tail++;
     fifo_size++;
@@ -18,7 +18,7 @@ void free_list_def::push(uint64_t item){
     }
 };
 
-uint64_t free_list_def::pop(){
+uint64_t free_list::pop(){
     item = list[head];
     head++;
     fifo_size--;
@@ -29,21 +29,21 @@ uint64_t free_list_def::pop(){
     return item;
 };
 
-free_list_def::~free_list_def(){
+free_list::~free_list(){
     delete [] list;
 };
 
-uint64_t free_list_def::size(){
+uint64_t free_list::size(){
     return fifo_size;
 };
 
 // Returns item at a given index. Correctly indexes the circular fifo
-uint64_t free_list_def::at(uint64_t index){
+uint64_t free_list::at(uint64_t index){
     if (head + index > FIFO_LENGTH) return list[head + index - FIFO_LENGTH];
     else return list[head + index];
 };
 
-void free_list_def::setTail(uint64_t value){
+void free_list::setTail(uint64_t value){
     if (value > FIFO_LENGTH){
         tail = value = FIFO_LENGTH;
     }
@@ -52,11 +52,11 @@ void free_list_def::setTail(uint64_t value){
     }
 };
 
-bool free_list_def::empty(){
+bool free_list::empty(){
     return (fifo_size == 0);
 };
 
-void free_list_def::flush(){
+void free_list::flush(){
     fifo_size = 0;
     head = tail = 0;
     tail_phase = head_phase = false;
