@@ -1,5 +1,4 @@
 #include <inttypes.h>
-#include <circular_fifo.h>
 #include <free_list.h>
 #include <active_list.h>
 

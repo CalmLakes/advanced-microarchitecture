@@ -39,12 +39,12 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
         AMT[idx] = idx;
     }
     // Initialize AMT
-    free_list = new circular_fifo<uint64_t>(n_phys_regs-n_log_regs);
+    free_list = new free_list(n_phys_regs-n_log_regs);
     for (uint64_t i =  n_log_regs; i<n_phys_regs;i++){
         free_list->push(i);
     }
     // Initialzie free list
-    active_list = new circular_fifo<active_list_entry*>(n_active);
+    active_list = new active_list(n_active);
     // init the active list
     PRF = new uint64_t[n_phys_regs];
     branch_checkpoints = new checkpoint_entry[n_branches];
