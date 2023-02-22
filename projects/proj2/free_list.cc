@@ -34,7 +34,14 @@ free_list::~free_list(){
 };
 
 uint64_t free_list::size(){
-    return fifo_size;
+    if (tail < head){
+        return (FIFO_LENGTH - head + tail);
+    }
+    else if (tail == head){
+        if (tail_phase == head_phase) return 0;
+        else return FIFO_LENGTH;
+    }
+    else return (tail - head);
 };
 
 // Returns item at a given index. Correctly indexes the circular fifo
