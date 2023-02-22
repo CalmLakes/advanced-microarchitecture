@@ -1,4 +1,5 @@
 #include <active_list.h>
+#include <bits/stdc++.h>
 
 active_list::active_list(uint64_t fifoSize){
     FIFO_LENGTH = fifoSize;
