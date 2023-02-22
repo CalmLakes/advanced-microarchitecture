@@ -54,7 +54,7 @@ void active_list::setTail(uint64_t value){
 }
 
 bool active_list::empty(){
-    return (fifo_size == 0);
+    return (head == tail) & (tail_phase == head_phase);
 }
 
 void active_list::flush(){

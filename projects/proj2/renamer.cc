@@ -418,7 +418,7 @@ bool renamer::precommit(bool &completed,
                     bool &exception, bool &load_viol, bool &br_misp, bool &val_misp,
                 bool &load, bool &store, bool &branch, bool &amo, bool &csr,
             uint64_t &PC){
-    if (AL->size() != 0){
+    if (!AL->empty()){
         active_list_entry * entry = AL->at(0);
 
         completed = entry->completed;
