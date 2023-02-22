@@ -51,7 +51,7 @@ active_list_entry * active_list::at(uint64_t index){
 void active_list::setTail(uint64_t value){
     if (value >= FIFO_LENGTH){
         tail = value - FIFO_LENGTH;
-        tail_phase != tail_phase;
+        tail_phase = !tail_phase;
     }
     else {
         tail = value;
