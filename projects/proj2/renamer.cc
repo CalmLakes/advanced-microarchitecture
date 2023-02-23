@@ -373,6 +373,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     uint64_t branch_bit = (0x1 << branch_ID);
     //printf("Starting resolve\n");
     if (correct){
+        printf("Resolving correct branch:)\n");
         // Clear branch bit
         GBM &= ~branch_bit;
         // clear in all checkpointed GBM
@@ -386,7 +387,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     }
     // Restoration case
     else {
-        printf("Resolving issue| branch index: %dBranch ID: %d\n",AL_index,branch_ID);
+        printf("Resolving issue| branch index: %d Branch ID: %d\n",AL_index,branch_ID);
         printf("GBM: %d\n",GBM);
         GBM = branch_checkpoints[branch_ID].GBM;
         RMT = branch_checkpoints[branch_ID].shadow_map_table;
