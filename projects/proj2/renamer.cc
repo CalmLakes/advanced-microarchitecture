@@ -306,7 +306,7 @@ void renamer::set_ready(uint64_t phys_reg){
 // Write a value into the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::write(uint64_t phys_reg, uint64_t value){
-    //printf("Writing Value: %d\n",value);
+    printf("Writing Value: %dto %d\n",value,phys_reg);
     PRF[phys_reg] = value;
 }
 
