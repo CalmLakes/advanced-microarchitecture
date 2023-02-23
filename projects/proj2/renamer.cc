@@ -387,14 +387,16 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     // Restoration case
     else {
         printf("Resolving issue| branch index: %d\n",AL_index);
+        printf("GBM: %d\n",GBM);
         GBM = branch_checkpoints[branch_ID].GBM;
         RMT = branch_checkpoints[branch_ID].shadow_map_table;
         FL->head = branch_checkpoints[branch_ID].head;
         FL->head_phase = branch_checkpoints[branch_ID].head_phase;
         FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
-
+        printf("GBM: %d\n",GBM);
         // Clear the GBM
         GBM &= ~branch_bit;
+        printf("GBM: %d\n",GBM);
         // Roll back the active list tail
         AL->setTail(AL_index+1);
     }
