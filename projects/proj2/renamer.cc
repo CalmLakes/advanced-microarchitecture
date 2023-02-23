@@ -525,7 +525,9 @@ void renamer::squash(){
     // clear GBM
     GBM = 0;
     // copy AMT to RMT
-    RMT = AMT;
+    for (int i =0;i<n_log_regs;i++){
+        RMT[i] = AMT[i];
+    }
    // printf("Finished commit\n");
 }
 
