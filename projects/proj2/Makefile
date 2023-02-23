@@ -35,3 +35,6 @@ build_dir:
 	ln -s /mnt/designkits/spec_2006_2017/O2_fno_bbreorder/app_storage/pk
 	atool-simenv mkgen 473.astar_rivers_ref --checkpoint 473.astar_rivers_ref.252.0.28.gz
 
+zip:
+	zip proj2.zip ./*
+
