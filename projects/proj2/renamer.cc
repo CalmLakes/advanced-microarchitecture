@@ -387,7 +387,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
         GBM &= ~branch_bit;
         // clear in all checkpointed GBM
         for (uint64_t i;i<n_branches;i++){
-            branch_checkpoints[i].GBM &= ~branch_bit
+            branch_checkpoints[i].GBM &= ~branch_bit;
         }
     }
     // Restoration case
