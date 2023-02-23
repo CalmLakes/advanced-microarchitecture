@@ -491,6 +491,7 @@ void renamer::commit(){
     assert(!AL->empty());
     active_list_entry * head = AL->at(AL->head);
     head->display();
+    porintf("Head IDX: %d\n",AL->head);
     assert(head->completed);
     assert(!head->exception);
     assert(!head->load_violation);
