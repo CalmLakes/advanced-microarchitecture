@@ -285,6 +285,7 @@ void renamer::clear_ready(uint64_t phys_reg){
 // and Execute Stages.                  //
 //////////////////////////////////////////
 uint64_t renamer::read(uint64_t phys_reg){
+    printf("Reading Value: %d",value);
     return PRF[phys_reg];
 }
 
@@ -304,6 +305,7 @@ void renamer::set_ready(uint64_t phys_reg){
 // Write a value into the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::write(uint64_t phys_reg, uint64_t value){
+    printf("Writing Value: %d",value);
     PRF[phys_reg] = value;
 }
 
