@@ -208,6 +208,7 @@ uint64_t renamer::checkpoint(){
 // space for all instructions in the dispatch bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_dispatch(uint64_t bundle_inst){
+    print("AL Full: %x\n", AL->full());
     if (AL->size() + bundle_inst > n_active) return true;
     else return false;
 }
@@ -521,20 +522,24 @@ void renamer::squash(){
 // value misprediction bit, of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_exception(uint64_t AL_index){
+    assert(0 < AL_index < n_active);
     active_list_entry * entry = AL->at(AL_index);
     entry->exception = true;
 }
 void renamer::set_load_violation(uint64_t AL_index){
+    assert(0 < AL_index < n_active);
     active_list_entry * entry = AL->at(AL_index);
     entry->load_violation = true;
 
 }
 void renamer::set_branch_misprediction(uint64_t AL_index){
+    assert(0 < AL_index < n_active);
     active_list_entry * entry = AL->at(AL_index);
     entry->branch_mispred = true;
 
 }
 void renamer::set_value_misprediction(uint64_t AL_index){
+    assert(0 < AL_index < n_active);
     active_list_entry * entry = AL->at(AL_index);
     entry->val_mispred = true;
 
@@ -544,6 +549,7 @@ void renamer::set_value_misprediction(uint64_t AL_index){
 // Query the exception bit of the indicated entry in the Active List.
 /////////////////////////////////////////////////////////////////////
 bool renamer::get_exception(uint64_t AL_index){
+    assert(0 < AL_index < n_active);
     active_list_entry * entry = AL->at(AL_index);
     return entry->exception;
 }
