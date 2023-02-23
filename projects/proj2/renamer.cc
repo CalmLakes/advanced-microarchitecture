@@ -210,7 +210,7 @@ return 0;
 // space for all instructions in the dispatch bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_dispatch(uint64_t bundle_inst){
-    printf("AL Full: %d\n", AL->size());
+    printf("AL Size: %d\n", AL->size());
     if (AL->size() + bundle_inst > n_active) return true;
     else return false;
 }
@@ -543,23 +543,23 @@ void renamer::set_exception(uint64_t AL_index){
     active_list_entry * entry = AL->at(AL_index);
     entry->exception = true;
 }
+
 void renamer::set_load_violation(uint64_t AL_index){
     assert(0 < AL_index && AL_index < n_active);
     active_list_entry * entry = AL->at(AL_index);
     entry->load_violation = true;
-
 }
+
 void renamer::set_branch_misprediction(uint64_t AL_index){
     assert(0 < AL_index && AL_index < n_active);
     active_list_entry * entry = AL->at(AL_index);
     entry->branch_mispred = true;
-
 }
+
 void renamer::set_value_misprediction(uint64_t AL_index){
     assert(0 < AL_index && AL_index < n_active);
     active_list_entry * entry = AL->at(AL_index);
     entry->val_mispred = true;
-
 }
 
 /////////////////////////////////////////////////////////////////////

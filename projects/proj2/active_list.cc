@@ -68,7 +68,7 @@ bool active_list::empty(){
 }
 
 void active_list::flush(){
-    head = tail = 0;
+    tail = head;
     tail_phase = head_phase = false;
 }
 
