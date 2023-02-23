@@ -38,7 +38,10 @@ uint64_t free_list::size(){
         return (FIFO_LENGTH - head + tail);
     }
     else if (tail == head){
-        if (tail_phase == head_phase) return 0;
+        if (tail_phase == head_phase){
+            printf("Free List is Empty\n");
+            return 0;
+        } 
         else return FIFO_LENGTH;
     }
     else return (tail - head);
@@ -56,7 +59,8 @@ bool free_list::empty(){
 };
 
 void free_list::flush(){
+    printf("Flushing\n");
     head = tail;
-    head_phase = tail_phase;
+    head_phase = tail_phase = 0;
 }
 
