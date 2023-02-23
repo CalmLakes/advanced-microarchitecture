@@ -208,7 +208,7 @@ uint64_t renamer::checkpoint(){
 // space for all instructions in the dispatch bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_dispatch(uint64_t bundle_inst){
-    print("AL Full: %d\n", AL->size());
+    printf("AL Full: %d\n", AL->size());
     if (AL->size() + bundle_inst > n_active) return true;
     else return false;
 }
