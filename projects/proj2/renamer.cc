@@ -402,7 +402,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
         RMT = branch_checkpoints[branch_ID].shadow_map_table;
         FL->head = branch_checkpoints[branch_ID].head;
         FL->head_phase = branch_checkpoints[branch_ID].head_phase;
-        FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
+        //FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
         printf("GBM: %x\n",GBM);
         // Clear the GBM
         GBM &= ~branch_bit;
