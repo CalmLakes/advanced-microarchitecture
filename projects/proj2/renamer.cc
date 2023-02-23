@@ -370,39 +370,39 @@ void renamer::set_complete(uint64_t AL_index){
 //   that because we immediately recover within this function.)
 /////////////////////////////////////////////////////////////////////
 void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
-    uint64_t idx = 0;
-    uint64_t mask = 1;
-    uint64_t branch_bit = (0x1 << branch_ID);
-    //printf("Starting resolve\n");
-    if (correct){
-        printf("Resolving correct branch:)\n");
-        // Clear branch bit
-        GBM &= ~branch_bit;
-        // clear in all checkpointed GBM
-        while (idx != n_branches){
-            if (GBM & mask){
-                branch_checkpoints[idx].GBM &= ~branch_bit;
-            }
-            mask <<= 1;
-            idx++;
-        }   
-    }
-    // Restoration case
-    else {
-        printf("Resolving issue| branch index: %d Branch ID: %d\n",AL_index,branch_ID);
-        printf("GBM: %d\n",GBM);
-        GBM = branch_checkpoints[branch_ID].GBM;
-        RMT = branch_checkpoints[branch_ID].shadow_map_table;
-        FL->head = branch_checkpoints[branch_ID].head;
-        FL->head_phase = branch_checkpoints[branch_ID].head_phase;
-        FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
-        printf("GBM: %d\n",GBM);
-        // Clear the GBM
-        GBM &= ~branch_bit;
-        printf("GBM: %d\n",GBM);
-        // Roll back the active list tail
-        AL->setTail(AL_index+1);
-    }
+    // uint64_t idx = 0;
+    // uint64_t mask = 1;
+    // uint64_t branch_bit = (0x1 << branch_ID);
+    // //printf("Starting resolve\n");
+    // if (correct){
+    //     printf("Resolving correct branch:)\n");
+    //     // Clear branch bit
+    //     GBM &= ~branch_bit;
+    //     // clear in all checkpointed GBM
+    //     while (idx != n_branches){
+    //         if (GBM & mask){
+    //             branch_checkpoints[idx].GBM &= ~branch_bit;
+    //         }
+    //         mask <<= 1;
+    //         idx++;
+    //     }   
+    // }
+    // // Restoration case
+    // else {
+    //     printf("Resolving issue| branch index: %d Branch ID: %d\n",AL_index,branch_ID);
+    //     printf("GBM: %d\n",GBM);
+    //     GBM = branch_checkpoints[branch_ID].GBM;
+    //     RMT = branch_checkpoints[branch_ID].shadow_map_table;
+    //     FL->head = branch_checkpoints[branch_ID].head;
+    //     FL->head_phase = branch_checkpoints[branch_ID].head_phase;
+    //     FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
+    //     printf("GBM: %d\n",GBM);
+    //     // Clear the GBM
+    //     GBM &= ~branch_bit;
+    //     printf("GBM: %d\n",GBM);
+    //     // Roll back the active list tail
+    //     AL->setTail(AL_index+1);
+    // }
     //printf("Finishing resolve\n");
 }
 
