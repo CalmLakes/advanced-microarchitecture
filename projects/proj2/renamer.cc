@@ -255,7 +255,7 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
     //printf("Starting dispatch\n");
     // Create new entry
     active_list_entry * entry = new active_list_entry(dest_valid,log_reg,phys_reg,load,store,branch,amo,csr,PC);
-    entry->display();
+    //entry->display();
     assert(!AL->full());
     uint64_t index = AL->tail;
     AL->push(entry);
@@ -481,6 +481,7 @@ void renamer::commit(){
     //printf("Starting commit\n");
     assert(!AL->empty());
     active_list_entry * head = AL->at(AL->head);
+    head->display();
     assert(head->completed);
     assert(!head->exception);
     assert(!head->load_violation);
