@@ -490,14 +490,14 @@ void renamer::commit(){
     //printf("Starting commit\n");
     assert(!AL->empty());
     active_list_entry * head = AL->at(AL->head);
-    head->display();
-    printf("Head IDX: %d\n",AL->head);
+    //head->display();
+    //printf("Head IDX: %d\n",AL->head);
     assert(head->completed);
     assert(!head->exception);
     assert(!head->load_violation);
     head = AL->pop();
     if (head->dest_flag){
-        FL->push(head->logical_reg_num);
+        FL->push(AMT[head->logical_reg_num]);
         AMT[head->logical_reg_num] = head->physical_reg_num;
     } 
     //printf("log: %d phys: %d\n is dest? %x\n",head->logical_reg_num,head->physical_reg_num,head->dest_flag);
