@@ -9,6 +9,9 @@ struct checkpoint_entry{
 		bool head_phase;
 		bool tail_phase;
 		uint64_t GBM;
+		checkpoint_entry(){
+			GBM = 0;
+		}
 	};
 
 class renamer {
