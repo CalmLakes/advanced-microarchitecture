@@ -61,6 +61,6 @@ bool free_list::empty(){
 void free_list::flush(){
     printf("Flushing\n");
     head = tail;
-    head_phase = tail_phase = 0;
+    head_phase = !tail_phase;
 }
 
