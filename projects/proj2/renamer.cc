@@ -180,6 +180,7 @@ uint64_t renamer::checkpoint(){
     }
     GBM |= mask;
     // Back everything up you dummy :))))))
+    printf("Writing Checkpoint\n");
     checkpoint_entry & dummy = branch_checkpoints[index];
     dummy.shadow_map_table = RMT;
     assert(&dummy.shadow_map_table != &RMT);
