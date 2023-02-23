@@ -385,7 +385,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     }
     // Restoration case
     else {
-        print("Resolving issue");
+        printf("Resolving issue");
         GBM = branch_checkpoints[branch_ID].GBM;
         RMT = branch_checkpoints[branch_ID].shadow_map_table;
         FL->head = branch_checkpoints[branch_ID].head;
