@@ -379,7 +379,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     uint64_t idx = 0;
     uint64_t mask = 1;
     uint64_t branch_bit = (0x1 << branch_ID);
-    printf("BranchId : %x Branch Bit: %x\n",branch_ID,branch_bit);
+    printf("BranchId : %d Branch Bit: %x\n",branch_ID,branch_bit);
     //printf("Starting resolve\n");
     if (correct){
         printf("Resolving correct branch:)\n");
