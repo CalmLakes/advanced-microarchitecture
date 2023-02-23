@@ -58,7 +58,7 @@ void active_list::setTail(uint64_t value){
         if (head < tail) tail_phase = !tail_phase;
     }
     else {
-        if (head < value && tail < head){
+        if (head < value && tail <= head){
             tail_phase = !tail_phase;
         }
         tail = value;
