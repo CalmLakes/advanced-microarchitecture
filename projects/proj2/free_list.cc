@@ -1,5 +1,5 @@
 #include <free_list.h>
-
+#include <bits/stdc++.h>
 free_list::free_list (uint64_t fifoSize){
     FIFO_LENGTH = fifoSize;
     list = new uint64_t[fifoSize];
