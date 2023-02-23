@@ -89,8 +89,8 @@ renamer::~renamer(){
 // in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_reg(uint64_t bundle_dst){
-    printf("FL SIZE: %d | bundle: %d\n", FL->size(),bundle_dst);
-    printf("Tail: %d | Head : %d\n",FL->tail, FL->head);
+    //rintf("FL SIZE: %d | bundle: %d\n", FL->size(),bundle_dst);
+    //printf("Tail: %d | Head : %d\n",FL->tail, FL->head);
     if ( bundle_dst > FL->size()) return true;
     else return false;
 }
@@ -209,7 +209,7 @@ uint64_t renamer::checkpoint(){
 // space for all instructions in the dispatch bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_dispatch(uint64_t bundle_inst){
-    printf("AL Full: %d\n", AL->size());
+    //printf("AL Full: %d\n", AL->size());
     if (AL->size() + bundle_inst > n_active) return true;
     else return false;
 }
