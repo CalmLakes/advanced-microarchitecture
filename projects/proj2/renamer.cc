@@ -210,7 +210,7 @@ return 0;
 // space for all instructions in the dispatch bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_dispatch(uint64_t bundle_inst){
-    printf("AL Size: %d\n", AL->size());
+    //printf("AL Size: %d\n", AL->size());
     if (AL->size() + bundle_inst > n_active) return true;
     else return false;
 }
@@ -309,7 +309,7 @@ void renamer::set_ready(uint64_t phys_reg){
 // Write a value into the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::write(uint64_t phys_reg, uint64_t value){
-    printf("Writing Value: %dto %d\n",value,phys_reg);
+    //printf("Writing Value: %dto %d\n",value,phys_reg);
     PRF[phys_reg] = value;
 }
 
