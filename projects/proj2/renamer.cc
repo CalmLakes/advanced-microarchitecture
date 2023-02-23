@@ -401,10 +401,10 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
         FL->head = branch_checkpoints[branch_ID].head;
         FL->head_phase = branch_checkpoints[branch_ID].head_phase;
         FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
-        printf("GBM: %d\n",GBM);
+        printf("GBM: %x\n",GBM);
         // Clear the GBM
         GBM &= ~branch_bit;
-        printf("GBM: %d\n",GBM);
+        printf("GBM: %x\n",GBM);
         // Roll back the active list tail
         AL->setTail(AL_index+1);
     }
