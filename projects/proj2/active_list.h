@@ -1,5 +1,5 @@
 #include <inttypes.h>
-
+#include <bits/stdc++.h>
 struct active_list_entry{
 		bool dest_flag;
 		uint64_t logical_reg_num;
@@ -44,7 +44,7 @@ struct active_list_entry{
 		load_violation =false;
 		}
 		active_list_entry(){}
-		print(){
+		display(){
 			printf("log reg: %d\nphys reg: %d\n completed: %x",logical_reg_num,physical_reg_num,completed);
 		}
 };
