@@ -177,10 +177,10 @@ uint64_t renamer::checkpoint(){
         index++;
         mask = mask << 1;
     }
-    GBM |= mask;
-    // Back everything up you dummy :))))))
-    printf("Writing Checkpoint\n");
+    printf("Index: %d\n",index);
     printf("GBM : %x\n", GBM);
+    GBM |= mask;
+    // Back everything up you dummy :)))))
     checkpoint_entry & dummy = branch_checkpoints[index];
     //dummy.shadow_map_table = RMT;
     uint64_t * shadow_map_table = new uint64_t[n_log_regs];
