@@ -58,6 +58,9 @@ void active_list::setTail(uint64_t value){
         tail_phase = !tail_phase;
     }
     else {
+        if (tail < value){
+            tail_phase = !tail_phase;
+        }
         tail = value;
     }
     printf("Head: %d Tail: %d\n",head,tail);
