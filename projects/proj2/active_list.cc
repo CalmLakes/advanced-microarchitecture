@@ -52,7 +52,7 @@ active_list_entry * active_list::at(uint64_t index){
 }
 
 void active_list::setTail(uint64_t value){
-    printf("Head: %d Tail: %d",head,tail);
+    printf("Head: %d Tail: %d\n",head,tail);
     if (value >= FIFO_LENGTH){
         tail = value - FIFO_LENGTH;
         tail_phase = !tail_phase;
@@ -60,7 +60,7 @@ void active_list::setTail(uint64_t value){
     else {
         tail = value;
     }
-    printf("Head: %d Tail: %d",head,tail);
+    printf("Head: %d Tail: %d\n",head,tail);
 }
 
 bool active_list::empty(){
