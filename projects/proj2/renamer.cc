@@ -488,7 +488,7 @@ void renamer::commit(){
     //printf("Starting commit\n");
     assert(!AL->empty());
     active_list_entry * head = AL->at(AL->head);
-    //head->display();
+    head->display();
     assert(head->completed);
     assert(!head->exception);
     assert(!head->load_violation);
