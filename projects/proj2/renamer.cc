@@ -91,7 +91,7 @@ renamer::~renamer(){
 bool renamer::stall_reg(uint64_t bundle_dst){
     printf("FL SIZE: %d | bundle: %d\n", FL->size(),bundle_dst);
     printf("Tail: %d | Head : %d\n",FL->tail, FL->head);
-    if ( bundle_dst > (n_phys_regs-n_log_regs) - FL->size()) return true;
+    if ( bundle_dst > FL->size()) return true;
     else return false;
 }
 
