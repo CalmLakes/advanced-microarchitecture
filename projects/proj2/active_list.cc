@@ -55,14 +55,15 @@ void active_list::setTail(uint64_t value){
     printf("Head: %d Tail: %d\n",head,tail);
     if (value >= FIFO_LENGTH){
         tail = value - FIFO_LENGTH;
-        tail_phase = !tail_phase;
+        if (head < tail) tail_phase = !tail_phase;
     }
     else {
-        if (tail < value){
+        if (head < value && tail < head){
             tail_phase = !tail_phase;
         }
         tail = value;
     }
+    
     printf("Head: %d Tail: %d\n",head,tail);
 }
 
