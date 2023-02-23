@@ -168,28 +168,29 @@ uint64_t renamer::rename_rdst(uint64_t log_reg){
 // 3. checkpointed GBM
 /////////////////////////////////////////////////////////////////////
 uint64_t renamer::checkpoint(){
-    //printf("Starting checkpoint\n");
-    //assert(GBM != 0xffffffffffffffff);   *****************************NEED TO REPLACE THIS GOOFY***********************LOLOLOOLOLOL
-    // Find the open bit
-    uint64_t mask = 0x1;
-    uint64_t index = 0;  
-    while (GBM & mask){
-        index++;
-        mask = mask << 1;
-    }
-    GBM |= mask;
-    // Back everything up you dummy :))))))
-    printf("Writing Checkpoint\n");
-    printf("GBM : %x\n", GBM);
-    checkpoint_entry & dummy = branch_checkpoints[index];
-    dummy.shadow_map_table = RMT;
-    assert(&dummy.shadow_map_table != &RMT);
-    dummy.head = FL->head;
-    dummy.tail_phase = FL->tail_phase;
-    dummy.head_phase = FL->head_phase;
-    dummy.GBM = GBM;
-   //printf("Starting checkpoint\n");
-    return index;
+//     //printf("Starting checkpoint\n");
+//     //assert(GBM != 0xffffffffffffffff);   *****************************NEED TO REPLACE THIS GOOFY***********************LOLOLOOLOLOL
+//     // Find the open bit
+//     uint64_t mask = 0x1;
+//     uint64_t index = 0;  
+//     while (GBM & mask){
+//         index++;
+//         mask = mask << 1;
+//     }
+//     GBM |= mask;
+//     // Back everything up you dummy :))))))
+//     printf("Writing Checkpoint\n");
+//     printf("GBM : %x\n", GBM);
+//     checkpoint_entry & dummy = branch_checkpoints[index];
+//     dummy.shadow_map_table = RMT;
+//     assert(&dummy.shadow_map_table != &RMT);
+//     dummy.head = FL->head;
+//     dummy.tail_phase = FL->tail_phase;
+//     dummy.head_phase = FL->head_phase;
+//     dummy.GBM = GBM;
+//    //printf("Starting checkpoint\n");
+//     return index;
+return 0;
 }
 
 //////////////////////////////////////////
