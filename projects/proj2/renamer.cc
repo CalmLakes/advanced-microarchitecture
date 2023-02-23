@@ -277,7 +277,7 @@ bool renamer::is_ready(uint64_t phys_reg){
 // Clear the ready bit of the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::clear_ready(uint64_t phys_reg){
-    printf("Cearing ready of %d\n",phys_reg);
+    printf("Clearing ready of %d\n",phys_reg);
     prf_ready_bit_array[phys_reg] = false;
 }
 
@@ -295,6 +295,7 @@ uint64_t renamer::read(uint64_t phys_reg){
 // Set the ready bit of the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_ready(uint64_t phys_reg){
+    printf("Setting ready of %d\n",phys_reg);
     prf_ready_bit_array[phys_reg] = true;
 }
 
