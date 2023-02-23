@@ -178,8 +178,8 @@ uint64_t renamer::checkpoint(){
         index++;
         mask = mask << 1;
     }
-    printf("Index: %d\n",index);
-    printf("GBM : %x\n", GBM);
+    // printf("Index: %d\n",index);
+    // printf("GBM : %x\n", GBM);
     GBM |= mask;
     // Back everything up you dummy :)))))
     checkpoint_entry & dummy = branch_checkpoints[index];
@@ -378,10 +378,10 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     uint64_t idx = 0;
     uint64_t mask = 1;
     uint64_t branch_bit = (0x1 << branch_ID);
-    printf("BranchId : %d Branch Bit: %x\n",branch_ID,branch_bit);
+    //printf("BranchId : %d Branch Bit: %x\n",branch_ID,branch_bit);
     //printf("Starting resolve\n");
     if (correct){
-        printf("Resolving correct branch:)\n");
+        //printf("Resolving correct branch:)\n");
         // Clear branch bit
         GBM &= ~branch_bit;
         // clear in all checkpointed GBM
@@ -391,21 +391,21 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     }
     // Restoration case
     else {
-        printf("Resolving issue| branch index: %d Branch ID: %d\n",AL_index,branch_ID);
-        printf("GBM: %x\n",GBM);
+        //printf("Resolving issue| branch index: %d Branch ID: %d\n",AL_index,branch_ID);
+        //printf("GBM: %x\n",GBM);
         GBM = branch_checkpoints[branch_ID].GBM;
         RMT = branch_checkpoints[branch_ID].shadow_map_table;
         FL->head = branch_checkpoints[branch_ID].head;
         FL->head_phase = branch_checkpoints[branch_ID].head_phase;
         //FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
-        printf("GBM: %x\n",GBM);
+       // printf("GBM: %x\n",GBM);
         // Clear the GBM
         GBM &= ~branch_bit;
-        printf("GBM: %x\n",GBM);
+       // printf("GBM: %x\n",GBM);
         // Roll back the active list tail
         AL->setTail(AL_index+1);
     }
-    printf("Finishing resolve\n");
+    //printf("Finishing resolve\n");
 }
 
 //////////////////////////////////////////
