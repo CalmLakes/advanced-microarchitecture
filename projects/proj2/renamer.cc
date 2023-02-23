@@ -168,28 +168,32 @@ uint64_t renamer::rename_rdst(uint64_t log_reg){
 // 3. checkpointed GBM
 /////////////////////////////////////////////////////////////////////
 uint64_t renamer::checkpoint(){
-//     //printf("Starting checkpoint\n");
-//     //assert(GBM != 0xffffffffffffffff);   *****************************NEED TO REPLACE THIS GOOFY***********************LOLOLOOLOLOL
-//     // Find the open bit
-//     uint64_t mask = 0x1;
-//     uint64_t index = 0;  
-//     while (GBM & mask){
-//         index++;
-//         mask = mask << 1;
-//     }
-//     GBM |= mask;
-//     // Back everything up you dummy :))))))
-//     printf("Writing Checkpoint\n");
-//     printf("GBM : %x\n", GBM);
-//     checkpoint_entry & dummy = branch_checkpoints[index];
-//     dummy.shadow_map_table = RMT;
-//     assert(&dummy.shadow_map_table != &RMT);
-//     dummy.head = FL->head;
-//     dummy.tail_phase = FL->tail_phase;
-//     dummy.head_phase = FL->head_phase;
-//     dummy.GBM = GBM;
-//    //printf("Starting checkpoint\n");
-//     return index;
+    //printf("Starting checkpoint\n");
+    //assert(GBM != 0xffffffffffffffff);   *****************************NEED TO REPLACE THIS GOOFY***********************LOLOLOOLOLOL
+    // Find the open bit
+    uint64_t mask = 0x1;
+    uint64_t index = 0;  
+    while (GBM & mask){
+        index++;
+        mask = mask << 1;
+    }
+    GBM |= mask;
+    // Back everything up you dummy :))))))
+    printf("Writing Checkpoint\n");
+    printf("GBM : %x\n", GBM);
+    checkpoint_entry & dummy = branch_checkpoints[index];
+    //dummy.shadow_map_table = RMT;
+    uint64_t * shadow_map_table = new uint64_t[n_log_regs];
+    for (uint64_t i;i < n_log_regs;i++){
+        shadow_map_table[i] = RMT[i];
+    }
+    dummy.shadow_map_table = shadow_map_table;
+    dummy.head = FL->head;
+    dummy.tail_phase = FL->tail_phase;
+    dummy.head_phase = FL->head_phase;
+    dummy.GBM = GBM;
+   //printf("Starting checkpoint\n");
+    return index;
 return 0;
 }
 
@@ -371,40 +375,40 @@ void renamer::set_complete(uint64_t AL_index){
 //   that because we immediately recover within this function.)
 /////////////////////////////////////////////////////////////////////
 void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
-    // uint64_t idx = 0;
-    // uint64_t mask = 1;
-    // uint64_t branch_bit = (0x1 << branch_ID);
-    // //printf("Starting resolve\n");
-    // if (correct){
-    //     printf("Resolving correct branch:)\n");
-    //     // Clear branch bit
-    //     GBM &= ~branch_bit;
-    //     // clear in all checkpointed GBM
-    //     while (idx != n_branches){
-    //         if (GBM & mask){
-    //             branch_checkpoints[idx].GBM &= ~branch_bit;
-    //         }
-    //         mask <<= 1;
-    //         idx++;
-    //     }   
-    // }
-    // // Restoration case
-    // else {
-    //     printf("Resolving issue| branch index: %d Branch ID: %d\n",AL_index,branch_ID);
-    //     printf("GBM: %d\n",GBM);
-    //     GBM = branch_checkpoints[branch_ID].GBM;
-    //     RMT = branch_checkpoints[branch_ID].shadow_map_table;
-    //     FL->head = branch_checkpoints[branch_ID].head;
-    //     FL->head_phase = branch_checkpoints[branch_ID].head_phase;
-    //     FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
-    //     printf("GBM: %d\n",GBM);
-    //     // Clear the GBM
-    //     GBM &= ~branch_bit;
-    //     printf("GBM: %d\n",GBM);
-    //     // Roll back the active list tail
-    //     AL->setTail(AL_index+1);
-    // }
-    //printf("Finishing resolve\n");
+    uint64_t idx = 0;
+    uint64_t mask = 1;
+    uint64_t branch_bit = (0x1 << branch_ID);
+    //printf("Starting resolve\n");
+    if (correct){
+        printf("Resolving correct branch:)\n");
+        // Clear branch bit
+        GBM &= ~branch_bit;
+        // clear in all checkpointed GBM
+        while (idx != n_branches){
+            if (GBM & mask){
+                branch_checkpoints[idx].GBM &= ~branch_bit;
+            }
+            mask <<= 1;
+            idx++;
+        }   
+    }
+    // Restoration case
+    else {
+        printf("Resolving issue| branch index: %d Branch ID: %d\n",AL_index,branch_ID);
+        printf("GBM: %d\n",GBM);
+        GBM = branch_checkpoints[branch_ID].GBM;
+        RMT = branch_checkpoints[branch_ID].shadow_map_table;
+        FL->head = branch_checkpoints[branch_ID].head;
+        FL->head_phase = branch_checkpoints[branch_ID].head_phase;
+        FL->tail_phase = branch_checkpoints[branch_ID].tail_phase; 
+        printf("GBM: %d\n",GBM);
+        // Clear the GBM
+        GBM &= ~branch_bit;
+        printf("GBM: %d\n",GBM);
+        // Roll back the active list tail
+        AL->setTail(AL_index+1);
+    }
+    printf("Finishing resolve\n");
 }
 
 //////////////////////////////////////////
