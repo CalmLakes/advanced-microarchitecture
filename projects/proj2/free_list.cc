@@ -39,7 +39,7 @@ uint64_t free_list::size(){
     }
     else if (tail == head){
         if (tail_phase == head_phase){
-            printf("Free List is Empty\n");
+            //printf("Free List is Empty\n");
             return 0;
         } 
         else return FIFO_LENGTH;
