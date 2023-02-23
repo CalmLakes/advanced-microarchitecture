@@ -107,7 +107,6 @@ bool renamer::stall_reg(uint64_t bundle_dst){
 // for all branches in the current rename bundle.
 /////////////////////////////////////////////////////////////////////
 bool renamer::stall_branch(uint64_t bundle_branch){
-    printf("GBM : %x\n", GBM);
     if ( (__builtin_popcount(GBM) + bundle_branch ) > n_branches ) return true;
     else return false;
 }
@@ -181,6 +180,7 @@ uint64_t renamer::checkpoint(){
     GBM |= mask;
     // Back everything up you dummy :))))))
     printf("Writing Checkpoint\n");
+    printf("GBM : %x\n", GBM);
     checkpoint_entry & dummy = branch_checkpoints[index];
     dummy.shadow_map_table = RMT;
     assert(&dummy.shadow_map_table != &RMT);
