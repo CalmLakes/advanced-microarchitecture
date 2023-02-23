@@ -27,7 +27,7 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
 	this->n_branches=n_branches;
 	this->n_active=n_active;
     // Check assertions
-    assert(1 <= n_branches <= 64);
+    assert(1 <= n_branches && n_branches <= 64);
     assert(n_active > 0);
     assert(n_phys_regs > n_log_regs);
     //  Initialzie the GB
@@ -278,7 +278,7 @@ bool renamer::is_ready(uint64_t phys_reg){
 // Clear the ready bit of the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::clear_ready(uint64_t phys_reg){
-    printf("Clearing ready of %d\n",phys_reg);
+    //printf("Clearing ready of %d\n",phys_reg);
     prf_ready_bit_array[phys_reg] = false;
 }
 
@@ -296,7 +296,7 @@ uint64_t renamer::read(uint64_t phys_reg){
 // Set the ready bit of the indicated physical register.
 /////////////////////////////////////////////////////////////////////
 void renamer::set_ready(uint64_t phys_reg){
-    printf("Setting ready of %d\n",phys_reg);
+    //printf("Setting ready of %d\n",phys_reg);
     prf_ready_bit_array[phys_reg] = true;
 }
 
