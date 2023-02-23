@@ -195,7 +195,6 @@ uint64_t renamer::checkpoint(){
     dummy.GBM = GBM;
    //printf("Starting checkpoint\n");
     return index;
-return 0;
 }
 
 //////////////////////////////////////////
