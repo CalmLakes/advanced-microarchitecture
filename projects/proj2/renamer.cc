@@ -55,6 +55,7 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
     for (uint64_t i = 0; i < n_phys_regs;i++){
         prf_ready_bit_array[i] = true;
     }
+    // Initialzie branch checkpoint
 }
     
 /////////////////////////////////////////////////////////////////////
@@ -378,13 +379,14 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
     uint64_t idx = 0;
     uint64_t mask = 1;
     uint64_t branch_bit = (0x1 << branch_ID);
+    printf("Branch Bit: %x\n",branch_bit);
     //printf("Starting resolve\n");
     if (correct){
         printf("Resolving correct branch:)\n");
         // Clear branch bit
         GBM &= ~branch_bit;
         // clear in all checkpointed GBM
-        while (idx != n_branches){
+        while (idx < n_branches){
             if (GBM & mask){
                 branch_checkpoints[idx].GBM &= ~branch_bit;
             }
