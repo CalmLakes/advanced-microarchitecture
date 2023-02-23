@@ -52,7 +52,7 @@ renamer::renamer(uint64_t n_log_regs,uint64_t n_phys_regs,uint64_t n_branches,ui
     PRF = new uint64_t[n_phys_regs];
     branch_checkpoints = new checkpoint_entry[n_branches];
     prf_ready_bit_array = new bool[n_phys_regs];
-    for (uint64_t i = 0; i < n_log_regs;i++){
+    for (uint64_t i = 0; i < n_phys_regs;i++){
         prf_ready_bit_array[i] = true;
     }
 }
