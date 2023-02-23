@@ -170,7 +170,7 @@ uint64_t renamer::rename_rdst(uint64_t log_reg){
 /////////////////////////////////////////////////////////////////////
 uint64_t renamer::checkpoint(){
     //printf("Starting checkpoint\n");
-    assert(GBM != 0xffffffffffffffff);
+    //assert(GBM != 0xffffffffffffffff);   *****************************NEED TO REPLACE THIS GOOFY***********************LOLOLOOLOLOL
     // Find the open bit
     uint64_t mask = 0x1;
     uint64_t index = 0;  
@@ -256,7 +256,7 @@ uint64_t renamer::dispatch_inst(bool dest_valid,
     // Create new entry
     active_list_entry * entry = new active_list_entry(dest_valid,log_reg,phys_reg,load,store,branch,amo,csr,PC);
     assert(!AL->full());
-    uint64_t index = AL->tail - AL->head;
+    uint64_t index = AL->tail;
     AL->push(entry);
     //printf("Finishing dispatch\n");
     //printf("Index: %d", index);
@@ -391,7 +391,7 @@ void renamer::resolve(uint64_t AL_index, uint64_t branch_ID, bool correct){
         // Clear the GBM
         GBM &= ~branch_bit;
         // Roll back the active list tail
-        AL->setTail(branch_ID+1);
+        AL->setTail(AL_index+1);
     }
     //printf("Finishing resolve\n");
 }
@@ -435,7 +435,7 @@ bool renamer::precommit(bool &completed,
             uint64_t &PC){
     //printf("Starting precommit\n");
     if (!AL->empty()){
-        active_list_entry * entry = AL->at(0);
+        active_list_entry * entry = AL->at(AL->head);
         //printf("Completed %x\n",entry->load_violation);
         completed = entry->completed;
         exception = entry->exception;
@@ -479,7 +479,7 @@ bool renamer::precommit(bool &completed,
 void renamer::commit(){
     //printf("Starting commit\n");
     assert(!AL->empty());
-    active_list_entry * head = AL->at(0);
+    active_list_entry * head = AL->at(AL->head);
     assert(head->completed);
     assert(!head->exception);
     assert(!head->load_violation);
