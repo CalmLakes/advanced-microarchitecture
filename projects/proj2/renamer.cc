@@ -485,6 +485,7 @@ void renamer::commit(){
     assert(!head->load_violation);
     head = AL->pop();
     if (head->dest_flag) FL->push(head->logical_reg_num);
+    printf("log: %d phys: %d\n",head->logical_reg_num,head->physical_reg_num);
     AMT[head->logical_reg_num] = head->physical_reg_num;
     //printf("Finished commit\n");
 }
