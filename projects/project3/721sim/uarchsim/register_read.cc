@@ -70,9 +70,9 @@ void pipeline_t::register_read(unsigned int lane_number) {
       //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       // FIX_ME #12 BEGIN
-      if (PAY.buf[index].A_value) PAY.buf[index].A_value.dw = REN->read(PAY.buf[index].A_phys_reg);
-      if (PAY.buf[index].B_value) PAY.buf[index].B_value.dw = REN->read(PAY.buf[index].B_phys_reg);
-      if (PAY.buf[index].D_value) PAY.buf[index].D_value.dw = REN->read(PAY.buf[index].D_phys_reg);
+      if (PAY.buf[index].A_valid) PAY.buf[index].A_value.dw = REN->read(PAY.buf[index].A_phys_reg);
+      if (PAY.buf[index].B_valid) PAY.buf[index].B_value.dw = REN->read(PAY.buf[index].B_phys_reg);
+      if (PAY.buf[index].D_valid) PAY.buf[index].D_value.dw = REN->read(PAY.buf[index].D_phys_reg);
       // FIX_ME #12 END
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////
