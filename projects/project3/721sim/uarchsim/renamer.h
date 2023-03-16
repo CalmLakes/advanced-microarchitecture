@@ -1,5 +1,5 @@
 #include <inttypes.h>
-#include <inttypes.h>
+#include <bits/stdc++.h>
 
 class free_list {
 		private: 
