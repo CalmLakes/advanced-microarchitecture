@@ -1,7 +1,159 @@
 #include <assert.h>
 #include <renamer.h>
 #include <bits/stdc++.h>
+//==============================================================================================
+// Free List
+//==============================================================================================
+free_list::free_list (uint64_t fifoSize){
+    FIFO_LENGTH = fifoSize;
+    list = new uint64_t[fifoSize];
+    fifo_size = 0;
+    head = tail = 0;
+    tail_phase = head_phase = false;
+};
 
+void free_list::push(uint64_t item){
+    list[tail] = item;
+    tail++;
+    fifo_size++;
+    if (tail == FIFO_LENGTH){
+        tail = 0;
+        tail_phase = !tail_phase;
+    }
+};
+
+uint64_t free_list::pop(){
+    item = list[head];
+    head++;
+    fifo_size--;
+    if (head == FIFO_LENGTH){
+        head = 0;
+        head_phase = !head_phase;
+    }
+    return item;
+};
+
+free_list::~free_list(){
+    delete [] list;
+};
+
+uint64_t free_list::size(){
+    if (tail < head){
+        return (FIFO_LENGTH - head + tail);
+    }
+    else if (tail == head){
+        if (tail_phase == head_phase){
+            //printf("Free List is Empty\n");
+            return 0;
+        } 
+        else return FIFO_LENGTH;
+    }
+    else return (tail - head);
+};
+
+// Returns item at a given index. Correctly indexes the circular fifo
+uint64_t free_list::at(uint64_t index){
+    if (head + index > FIFO_LENGTH) return list[head + index - FIFO_LENGTH];
+    else return list[head + index];
+};
+
+
+bool free_list::empty(){
+    return (fifo_size == 0);
+};
+
+void free_list::flush(){
+    //printf("Flushing\n");
+    head = tail;
+    head_phase = !tail_phase;
+}
+
+//==============================================================================================
+// Active List
+//==============================================================================================
+active_list::active_list(uint64_t fifoSize){
+    FIFO_LENGTH = fifoSize;
+    list = new active_list_entry * [fifoSize];
+    fifo_size = 0;
+    head = tail = 0;
+    tail_phase = head_phase = false;
+}
+
+void active_list::push(active_list_entry * item){
+    list[tail] = item;
+    tail++;
+    if (tail == FIFO_LENGTH){
+        tail = 0;
+        tail_phase = !tail_phase;
+    }
+}
+// Test bro
+active_list_entry * active_list::pop(){
+    item = list[head];
+    head++;
+    if (head == FIFO_LENGTH){
+        head = 0;
+        head_phase = !head_phase;
+    }
+    return item;
+}
+
+active_list::~active_list(){
+    delete [] list;
+}
+
+uint64_t active_list::size(){
+    if (tail < head){
+        return (FIFO_LENGTH - head + tail);
+    }
+    else if (tail == head){
+        if (tail_phase == head_phase) return 0;
+        else return FIFO_LENGTH;
+    }
+    else return (tail - head);
+}
+
+// Returns item at a given index. Correctly indexes the circular fifo
+active_list_entry * active_list::at(uint64_t index){
+    //printf("Active list size: %d\n",FIFO_LENGTH);
+    //printf("Head: %d | Tail: %d\n",head,tail);
+    assert(0 <= index && index < FIFO_LENGTH);
+    return list[index];
+}
+
+void active_list::setTail(uint64_t value){
+    //printf("Head: %d Tail: %d Full: %x\n",head,tail,full());
+    if (value >= FIFO_LENGTH){
+        tail = value - FIFO_LENGTH;
+        if (head < tail) tail_phase = !tail_phase;
+    }
+    else {
+        if (head < value && tail <= head){
+            tail_phase = !tail_phase;
+        }
+        tail = value;
+    }
+    
+    //printf("Head: %d Tail: %d\n",head,tail);
+}
+
+bool active_list::empty(){
+    return (head == tail) && (tail_phase == head_phase);
+}
+
+void active_list::flush(){
+    tail = head;
+    tail_phase = head_phase = false;
+}
+
+bool active_list::full(){
+    return (head == tail) && (tail_phase != head_phase);
+}
+
+
+//==============================================================================================
+// Renamer List
+//==============================================================================================
 /////////////////////////////////////////////////////////////////////
 // This is the constructor function.
 // When a renamer object is instantiated, the caller indicates:
