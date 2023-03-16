@@ -51,6 +51,7 @@ void pipeline_t::rename2() {
    unsigned int i;
    unsigned int index;
    unsigned int bundle_dst, bundle_branch;
+   unsigned int num_checkpoints, num_phys_regs;
 
    // Stall the rename2 sub-stage if either:
    // (1) There isn't a current rename bundle.
@@ -65,6 +66,8 @@ void pipeline_t::rename2() {
    // Third stall condition: There aren't enough rename resources for the current rename bundle.
    bundle_dst = 0;
    bundle_branch = 0;
+   num_checkpoints = 0;
+   num_phys_regs = 0;
    for (i = 0; i < dispatch_width; i++) {
       if (!RENAME2[i].valid)
          break;			// Not a valid instruction: Reached the end of the rename bundle so exit loop.
@@ -86,6 +89,8 @@ void pipeline_t::rename2() {
       //    Another field indicates whether or not the instruction has a destination register.
 
       // FIX_ME #1 BEGIN
+      if (PAY.buf[index].checkpoint) num_checkpoints++;
+      if (PAY.buf[index].C_valid) num_phys_regs++;
       // FIX_ME #1 END
    }
 
@@ -100,6 +105,7 @@ void pipeline_t::rename2() {
    // This is achieved by doing nothing and proceeding to the next statements.
 
    // FIX_ME #2 BEGIN
+   if (REN->stall_branch(num_checkpoints) || REN->stall_reg(num_phys_regs)) return;
    // FIX_ME #2 END
 
    //
@@ -125,6 +131,11 @@ void pipeline_t::rename2() {
       //    so that the physical register specifier can be used in subsequent pipeline stages.
 
       // FIX_ME #3 BEGIN
+      if (PAY.buf[index].A_valid) A_phys_reg = REN->rename_rsrc(A_log_reg);
+      if (PAY.buf[index].B_valid) B_phys_reg = REN->rename_rsrc(B_log_reg);
+      if (PAY.buf[index].D_valid) D_phys_reg = REN->rename_rsrc(D_log_reg);
+      // Rename dest
+      if (PAY.buf[index].C_valid) C_phys_reg = REN->rename_rdst(C_log_reg);
       // FIX_ME #3 END
 
       // FIX_ME #4
@@ -139,6 +150,7 @@ void pipeline_t::rename2() {
       //    RENAME2[i].branch_mask = ??;
 
       // FIX_ME #4 BEGIN
+      RENAME2[i].branch_mask = REN->get_branch_mask();
       // FIX_ME #4 END
 
       // FIX_ME #5
@@ -151,6 +163,7 @@ void pipeline_t::rename2() {
       //    so that the branch ID can be used in subsequent pipeline stages.
 
       // FIX_ME #5 BEGIN
+      if (PAY.buf[index].checkpoint) PAY.buf[index].branch_ID = REN->checkpoint();
       // FIX_ME #5 END
    }
 

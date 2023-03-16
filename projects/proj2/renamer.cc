@@ -170,7 +170,6 @@ uint64_t renamer::rename_rdst(uint64_t log_reg){
 /////////////////////////////////////////////////////////////////////
 uint64_t renamer::checkpoint(){
     //printf("Starting checkpoint\n");
-    //assert(GBM != 0xffffffffffffffff);   *****************************NEED TO REPLACE THIS GOOFY***********************LOLOLOOLOLOL
     // Find the open bit
     uint64_t mask = 0x1;
     uint64_t index = 0;  
@@ -181,7 +180,6 @@ uint64_t renamer::checkpoint(){
     // printf("Index: %d\n",index);
     // printf("GBM : %x\n", GBM);
     GBM |= mask;
-    // Back everything up you dummy :)))))
     checkpoint_entry & dummy = branch_checkpoints[index];
     //dummy.shadow_map_table = RMT;
     uint64_t * shadow_map_table = new uint64_t[n_log_regs];

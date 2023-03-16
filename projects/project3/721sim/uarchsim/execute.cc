@@ -72,6 +72,11 @@ void pipeline_t::execute(unsigned int lane_number) {
 	    // check the existence (validity) of a destination register.
 
             // FIX_ME #13 BEGIN
+            if (hit && PAY.buf[index].C_valid){
+               IQ.wakeup(PAY.buf[index].C_phys_reg);
+               REN->set_ready(PAY.buf[index].C_phys_reg);
+               REN->write(PAY.buf[index].C_phys_reg, PAY.buf[index].C_value);
+            }
             // FIX_ME #13 END
          }
          else {
@@ -133,6 +138,9 @@ void pipeline_t::execute(unsigned int lane_number) {
 	 // You don't have to decode the instruction, rather, just check the existence (validity) of a destination register.
 
          // FIX_ME #14 BEGIN
+          if (PAY.buf[index].C_valid){
+            REN->write(PAY.buf[index].C_phys_reg, PAY.buf[index].C_value);
+         }
          // FIX_ME #14 END
       }
 
@@ -166,7 +174,7 @@ void pipeline_t::execute(unsigned int lane_number) {
       // "depth-1" corresponds to instruction in second-to-last sub-stage.
       
       if (Execution_Lanes[lane_number].ex[depth-1].valid) {
-	 index = Execution_Lanes[lane_number].ex[depth-1].index;
+	      index = Execution_Lanes[lane_number].ex[depth-1].index;
          // FIX_ME #11b
          //
          // The check, above, indicates that there is a valid instruction in the
@@ -187,7 +195,11 @@ void pipeline_t::execute(unsigned int lane_number) {
          //       to the wakeup port).
          //    b. Set the destination register's ready bit.
 
-	 // FIX_ME #11b BEGIN
+         // FIX_ME #11b BEGIN
+         if (PAY.buf[index].C_valid && !IS_LOAD(PAY.buf[index].flags) && !IS_AMO(PAY.buf[index].flags)){
+            IQ.wakeup(PAY.buf[index].C_phys_reg);
+            REN->set_ready(PAY.buf[index].C_phys_reg);
+         }
          // FIX_ME #11b END
       }
    }
@@ -239,8 +251,11 @@ void pipeline_t::load_replay() {
          // Tips:
          // 1. At this point of the code, 'index' is the instruction's index into PAY.buf[] (payload).
          // 2. See #13 (in execute.cc), and implement steps 3a,3b,3c.
-      
-	 // FIX_ME #18a BEGIN
+
+	      // FIX_ME #18a BEGIN
+         IQ.wakeup(PAY.buf[index].C_phys_reg);
+         REN->set_ready(PAY.buf[index].C_phys_reg);
+         REN->write(PAY.buf[index].C_phys_reg, PAY.buf[index].C_value);
          // FIX_ME #18a END
       }
 
@@ -252,6 +267,7 @@ void pipeline_t::load_replay() {
       // 2. Set the completed bit for this instruction in the Active List.
 
       // FIX_ME #18b BEGIN
+      REN->set_complete(PAY.buf[index].AL_index);
       // FIX_ME #18b END
    }
 }
