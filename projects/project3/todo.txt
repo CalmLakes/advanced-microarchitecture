@@ -1,0 +1,87 @@
+./dispatch.cc:   // FIX_ME #6
+./dispatch.cc:   // FIX_ME #6 BEGIN
+./dispatch.cc:   // FIX_ME #6 END
+./dispatch.cc:      // FIX_ME #7
+./dispatch.cc:      // FIX_ME #7 BEGIN
+./dispatch.cc:      // FIX_ME #7 END
+./dispatch.cc:      // FIX_ME #8
+./dispatch.cc:      // FIX_ME #8 BEGIN
+./dispatch.cc:      // FIX_ME #8 END
+./dispatch.cc:      // FIX_ME #9
+./dispatch.cc:      // FIX_ME #9 BEGIN
+./dispatch.cc:      // FIX_ME #9 END
+./dispatch.cc:      // FIX_ME #10
+./dispatch.cc:            // FIX_ME #10a
+./dispatch.cc:            // FIX_ME #10a BEGIN
+./dispatch.cc:            // FIX_ME #10a END
+./dispatch.cc:            // FIX_ME #10b
+./dispatch.cc:            // *** FIX_ME #10b (part 1): Set completed bit in Active List.
+./dispatch.cc:            // FIX_ME #10b1 BEGIN
+./dispatch.cc:            // FIX_ME #10b1 END
+./dispatch.cc:               // *** FIX_ME #10b (part 2): Set exception bit in Active List.
+./dispatch.cc:               // FIX_ME #10b2 BEGIN
+./dispatch.cc:               // FIX_ME #10b2 END
+./execute.cc:            // FIX_ME #13
+./execute.cc:            // FIX_ME #13 BEGIN
+./execute.cc:            // FIX_ME #13 END
+./execute.cc:         // FIX_ME #14
+./execute.cc:         // FIX_ME #14 BEGIN
+./execute.cc:         // FIX_ME #14 END
+./execute.cc:         // FIX_ME #11b
+./execute.cc:	 // FIX_ME #11b BEGIN
+./execute.cc:         // FIX_ME #11b END
+./execute.cc:   // FIX_ME #18
+./execute.cc:         // FIX_ME #18a
+./execute.cc:	 // FIX_ME #18a BEGIN
+./execute.cc:         // FIX_ME #18a END
+./execute.cc:      // FIX_ME #18b
+./execute.cc:      // FIX_ME #18b BEGIN
+./execute.cc:      // FIX_ME #18b END
+./register_read.cc:      // FIX_ME #11a
+./register_read.cc:      // Multi-cycle instructions perform wakeup at an equivalent stage (see FIX_ME #11b).
+./register_read.cc:      //    second-to-last cycle of execute, which is at execute.cc, pipeline_t::execute(), FIX_ME #11b.
+./register_read.cc:      // FIX_ME #11a BEGIN
+./register_read.cc:      // FIX_ME #11a END
+./register_read.cc:      // FIX_ME #12
+./register_read.cc:      // FIX_ME #12 BEGIN
+./register_read.cc:      // FIX_ME #12 END
+./rename.cc:      // FIX_ME #1
+./rename.cc:      // FIX_ME #1 BEGIN
+./rename.cc:      // FIX_ME #1 END
+./rename.cc:   // FIX_ME #2
+./rename.cc:   // FIX_ME #2 BEGIN
+./rename.cc:   // FIX_ME #2 END
+./rename.cc:      // FIX_ME #3
+./rename.cc:      // FIX_ME #3 BEGIN
+./rename.cc:      // FIX_ME #3 END
+./rename.cc:      // FIX_ME #4
+./rename.cc:      // FIX_ME #4 BEGIN
+./rename.cc:      // FIX_ME #4 END
+./rename.cc:      // FIX_ME #5
+./rename.cc:      // FIX_ME #5 BEGIN
+./rename.cc:      // FIX_ME #5 END
+./retire.cc:   // FIX_ME #17a
+./retire.cc:   // FIX_ME #17a BEGIN
+./retire.cc:   // FIX_ME #17a END
+./retire.cc:         // FIX_ME #17b
+./retire.cc:         // FIX_ME #17b BEGIN
+./retire.cc:         // FIX_ME #17b END
+./squash.cc:        // FIX_ME #17c
+./squash.cc:        // FIX_ME #17c BEGIN
+./squash.cc:        // FIX_ME #17c END
+./writeback.cc:      // FIX_ME #15
+./writeback.cc:            // FIX_ME #15a
+./writeback.cc:	    // FIX_ME #15a BEGIN
+./writeback.cc:	    // FIX_ME #15a END
+./writeback.cc:            // FIX_ME #15b
+./writeback.cc:	    // FIX_ME #15b BEGIN
+./writeback.cc:	    // FIX_ME #15b END
+./writeback.cc:            // FIX_ME #15c
+./writeback.cc:            // FIX_ME #15c BEGIN
+./writeback.cc:            // FIX_ME #15c END
+./writeback.cc:            // FIX_ME #15d
+./writeback.cc:            // FIX_ME #15d BEGIN
+./writeback.cc:            // FIX_ME #15d END
+./writeback.cc:      // FIX_ME #16
+./writeback.cc:      // FIX_ME #16 BEGIN
+./writeback.cc:      // FIX_ME #16 END
