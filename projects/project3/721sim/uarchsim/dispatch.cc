@@ -165,7 +165,7 @@ void pipeline_t::dispatch() {
       if (!PAY.buf[index].B_valid || REN->is_ready(PAY.buf[index].B_phys_reg)) B_ready = true;
       else B_ready = false;
       
-      if (!PAY.buf[index].D_valid || REN->is_ready(PAY.buf[index].D_phys_reg)) C_ready = true;
+      if (!PAY.buf[index].D_valid || REN->is_ready(PAY.buf[index].D_phys_reg)) D_ready = true;
       else D_ready = false;
       // FIX_ME #8 END
 
@@ -183,7 +183,7 @@ void pipeline_t::dispatch() {
       // 2. If the instruction has a destination register, then clear its ready bit; otherwise do nothing.
 
       // FIX_ME #9 BEGIN
-      REN->clear_ready(AY.buf[index].C_phys_reg);
+      REN->clear_ready(PAY.buf[index].C_phys_reg);
       // FIX_ME #9 END
 
       // FIX_ME #10

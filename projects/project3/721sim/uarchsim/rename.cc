@@ -131,11 +131,11 @@ void pipeline_t::rename2() {
       //    so that the physical register specifier can be used in subsequent pipeline stages.
 
       // FIX_ME #3 BEGIN
-      if (PAY.buf[index].A_valid) A_phys_reg = REN->rename_rsrc(A_log_reg);
-      if (PAY.buf[index].B_valid) B_phys_reg = REN->rename_rsrc(B_log_reg);
-      if (PAY.buf[index].D_valid) D_phys_reg = REN->rename_rsrc(D_log_reg);
+      if (PAY.buf[index].A_valid) PAY.buf[index].A_phys_reg = REN->rename_rsrc(PAY.buf[index].A_log_reg);
+      if (PAY.buf[index].B_valid) PAY.buf[index].B_phys_reg = REN->rename_rsrc(PAY.buf[index].B_log_reg);
+      if (PAY.buf[index].D_valid) PAY.buf[index].D_phys_reg = REN->rename_rsrc(PAY.buf[index].D_log_reg);
       // Rename dest
-      if (PAY.buf[index].C_valid) C_phys_reg = REN->rename_rdst(C_log_reg);
+      if (PAY.buf[index].C_valid) PAY.buf[index].C_phys_reg = REN->rename_rdst(PAY.buf[index].C_log_reg);
       // FIX_ME #3 END
 
       // FIX_ME #4

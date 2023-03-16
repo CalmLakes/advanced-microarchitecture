@@ -45,7 +45,7 @@ struct active_list_entry{
 		}
 		active_list_entry(){}
 		void display(){
-			printf("=============\nlog reg: %d\nphys reg: %d\n completed: %x\n=============\n",logical_reg_num,physical_reg_num,completed);
+			printf("=============\nlog reg: %ld\nphys reg: %ld\n completed: %lx\n=============\n",logical_reg_num,physical_reg_num,completed);
 		}
 };
 
